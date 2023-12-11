@@ -1,0 +1,33 @@
+
+version: '3'
+
+volumes:
+  pg_data_production:
+  static_volume:
+  media_volume:
+  data_volume:
+
+services:
+  db:
+    image: postgres:13.10
+    env_file: .env
+    restart: always
+    volumes:
+      - pg_data_production:/var/lib/postgresql/data/
+  backend:
+    image: sergeyxx/psyhelp_backend
+    env_file: .env
+    restart: always
+    volumes:
+      - static_volume:/backend_static/
+      - media_volume:/media/
+      - data_volume:/data/
+  gateway:
+    image: sergeyxx/psyhelp_gateway
+    env_file: .env
+    restart: always
+    volumes:
+      - static_volume:/staticfiles/
+      - media_volume:/media/
+    ports:
+      - 8000:80

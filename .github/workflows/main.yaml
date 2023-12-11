@@ -1,4 +1,4 @@
-name: Main psyhelp workflow
+name: Main Psyhelp workflow
 
 on:
   push:
@@ -95,7 +95,6 @@ jobs:
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
-        key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.SSH_PASSPHRASE }}
         source: "docker-compose.production.yml"
         target: "psyhelp"
@@ -104,7 +103,6 @@ jobs:
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
-        key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.SSH_PASSPHRASE }}
         script: |
           cd psyhelp
@@ -127,4 +125,4 @@ jobs:
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
-        message: Деплой Psyhelp успешно выполнен!
+        message: Деплой PsyHelp успешно выполнен!
