@@ -1,0 +1,864 @@
+openapi: 3.0.2
+info:
+  title: 'Psychology help'
+  version: '1'
+paths:
+  /api/v1/users/psychologist/:
+    get:
+      operationId: listPsychologist
+      description: ''
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 10
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://psyhelp.ru/api/v1/users/psychologists/?page=4
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://psyhelp.ru/api/v1/users/psychologists/?page=2
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Psychologist'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createPsychologist
+      description: 'Create new psychologist user'
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PsychologistCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PsychologistCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PsychologistCreate'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PsychologistCreate'
+          description: ''
+        '400':
+            description: Bad request.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    field_name:
+                      type: string
+                      format: string
+                      example: Обязательное поле.
+      tags:
+      - api
+  /api/users/psychologist/me/:
+    get:
+      operationId: retrieveMe
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Psychologist'
+          description: ''
+        '401':
+            description: Unauthorized.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - api
+    put:
+      operationId: updatePsychologist
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PsychologistUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Psychologist'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Psychologist'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Psychologist'
+          description: ''
+        '400':
+            description: Bad request.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    first_name:
+                      type: integer
+                      format: int64
+                      example: Поле обязательно для заполнения!
+                    second_name:
+                      type: string
+                      example: Поле обязательно для заполнения!
+                    birth_date:
+                      type: string
+                      example: Поле обязательно для заполнения!
+        '401':
+            description: Unauthorized.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Unauthorized'
+        '403':
+            description: Forbidden.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Forbidden'
+        '404':
+            description: Not found.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Not_Found'
+                    
+      tags:
+      - api
+    patch:
+      operationId: partialUpdatePsychologist
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PsychologistUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Psychologist'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Psychologist'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Psychologist'
+          description: ''
+        '400':
+            description: Bad request.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    first_name:
+                      type: string
+                      example: Поле обязательно для заполнения!
+                    second_name:
+                      type: string
+                      example: Поле обязательно для заполнения!
+                    birth_date:
+                      type: string
+                      format: date
+                      example: Поле обязательно для заполнения!
+        '401':
+            description: Unauthorized.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Unauthorized'
+        '403':
+            description: Forbidden.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Forbidden'
+        '404':
+            description: Not found.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Not_Found'
+      tags:
+      - api
+
+  /api/users/psychologist/me/education/:
+    get:
+      operationId: listEducations
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Education'
+          description: ''
+        '401':
+            description: Unauthorized.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - api
+    post:
+      operationId: createEducation
+      description: 'Create new education'
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                  $ref: '#/components/schemas/Education'
+          
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Education'
+          description: ''
+        '400':
+            description: Bad request.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    scan:
+                      type: string
+                      format: binary
+                      example: Обязательное поле.
+      tags:
+      - api
+  /api/users/psychologist/me/education/{id}/:
+    delete:
+      operationId: deleteEducation
+      description: ''
+      parameters: []
+      responses:
+        '204':
+          description: 'No content'
+        '401':
+            description: Unauthorized.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Unauthorized'
+        '403':
+            description: Forbidden.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Forbidden'
+        '404':
+            description: Not found.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Not_Found'
+      tags:
+        - api
+  /api/users/psychologist/{id}/:
+    get:
+      operationId: retrievePsychologist
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this user.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Psychologist'
+          description: ''
+        '401':
+            description: Unauthorized.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Unauthorized'
+        '403':
+            description: Forbidden.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Forbidden'
+        '404':
+            description: Not found.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Not_Found'
+      tags:
+      - api
+
+  /api/v1/chat/:
+    get:
+      operationId: listChats
+      description: 'get chat list'
+      parameters:
+        - in: path
+          name: active
+          required: true
+          schema:
+            type: boolean
+            format: string
+            minimum: 1
+          description: Boolean parametr to filter active chats
+        - in: path
+          name: new
+          required: true
+          schema:
+            type: boolean
+            format: string
+            minimum: 1
+          description: Boolean parametr to filter new chats
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chat'
+          description: ''
+        '401':
+            description: Unauthorized.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Unauthorized'
+        '403':
+            description: Forbidden.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Forbidden'
+      tags:
+      - api
+
+    post:
+      operationId: createChat
+      description: ''
+      parameters: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chat'
+          description: ''
+        '403':
+            description: Forbidden.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Forbidden'
+      tags:
+      - api
+
+  /api/v1/chat/{chat_id}/:
+    get:
+      operationId: getChat
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chat'
+          description: ''
+        '404':
+            description: Not found.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Not_Found'
+      tags:
+      - api
+
+    post:
+      operationId: sendMessage
+      description: 'send message to chat'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: ''
+        '400':
+            description: Bad request.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    text:
+                      type: string
+                      format: string
+                      example: Обязательное поле.
+        '403':
+            description: Forbidden.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Forbidden'
+      tags:
+      - api
+
+    delete:
+      operationId: destroyChat
+      description: ''
+      parameters: []
+      responses:
+        '204':
+          description: 'No content'
+        '401':
+            description: Unauthorized.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Unauthorized'
+        '403':
+            description: Forbidden.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Forbidden'
+        '404':
+            description: Not found.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Not_Found'
+      tags:
+        - api
+
+  /api/v1/chat/{chat_id}/finish/:
+    post:
+      operationId: deactivate_chat
+      description: ''
+      parameters: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chat'
+          description: ''
+        '403':
+            description: Forbidden.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Forbidden'
+        '404':
+            description: Not found.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Not_Found'
+      tags:
+      - api
+
+  /api/users/reset_password/:
+    post:
+      operationId: resetPasswordUser
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendEmailReset'
+          description: ''
+        '401':
+            description: Unauthorized.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - api
+  /api/users/reset_password_confirm/:
+    post:
+      operationId: resetPasswordConfirmUser
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasswordResetConfirm'
+          description: ''
+      tags:
+      - api
+
+  /api/token/login/:
+    post:
+      operationId: createTokenCreate
+      description: Use this endpoint to obtain user authentication token.
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenCreate'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenCreate'
+          description: ''
+        '400':
+            description: Bad request.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                      format: email
+                      example: Поле обязательно для заполнения!
+                    password:
+                      type: string
+                      example: Поле обязательно для заполнения!
+      tags:
+      - api
+  /api/token/logout/:
+    post:
+      operationId: createTokenDestroy
+      description: Use this endpoint to logout user (remove user authentication token).
+      parameters: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+          description: ''
+        '401':
+            description: Unauthorized.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - api
+
+components:
+  schemas:
+    Psychologist:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          example: 1
+        username:
+          type: string
+          maxLength: 16
+        first_name:
+          type: string
+        second_name:
+          type: string
+        birth_date:
+          type: string
+          format: date
+        photo:
+          type: string
+          format: binary
+        education:
+          type: array
+          items:
+            $ref: '#/components/schemas/Education'
+        approved:
+            type: boolean
+            format: boolean
+      required:
+      - username
+      - first_name
+      - second_name
+      - birth_date
+
+    Education:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        university:
+          type: string
+          maxLength: 254
+        faculty:
+          type: string
+          maxLength: 254
+        specialization:
+          type: string
+          maxLength: 254
+        year_of_graduation:
+          type: integer
+          example: 1980
+          minimum: 1900
+          maximum: 2026
+        scan:
+          type: string
+          format: binary
+      required:
+        - scan
+
+    PsychologistCreate:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        username:
+          type: string
+          description: Required. 20 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+\z
+          maxLength: 20
+          example: stop_despondency
+        id:
+          type: integer
+          readOnly: true
+          example: 1
+        token:
+          type: string
+          readOnly: true
+          example: kdasjbfjhbccvubaskdjfbhdsavjfv
+        group:
+            type: string
+            readOnly: true
+            example: psychologist
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - username
+      - password
+      - email
+
+    PsychologistUpdate:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        first_name:
+          type: string
+        second_name:
+          type: string
+        birth_date:
+          type: string
+          format: date
+          minimum: 1900
+          maximum: 2005
+        photo:
+          type: string
+      required:
+      - first_name
+      - second_name
+      - birth_date
+    
+    Chat:
+      type: object
+      properties:
+        chat_id:
+          type: string
+          format: string
+        id:
+          type: integer
+          format: string
+        active:
+          type: boolean
+          format: boolian
+        messages:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                readOnly: true
+              date:
+                type: string
+              text:
+                type: string
+              author:
+                type: string
+
+    Message:
+      type: object
+      properties:
+        text:
+          type: string
+          format: string
+      required:
+      - text
+
+    SendEmailReset:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+      required:
+      - email
+    PasswordResetConfirm:
+      type: object
+      properties:
+        uid:
+          type: string
+        token:
+          type: string
+        new_password:
+          type: string
+      required:
+      - uid
+      - token
+      - new_password
+    UsernameResetConfirm:
+      type: object
+      properties:
+        new_username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+\z
+          maxLength: 150
+      required:
+      - new_username
+    SetPassword:
+      type: object
+      properties:
+        new_password:
+          type: string
+        current_password:
+          type: string
+      required:
+      - new_password
+      - current_password
+    SetUsername:
+      type: object
+      properties:
+        current_password:
+          type: string
+        new_username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+\z
+          maxLength: 150
+      required:
+      - current_password
+      - new_username
+    TokenCreate:
+      type: object
+      properties:
+        password:
+          type: string
+          writeOnly: true
+        email:
+          type: string
+          writeOnly: true
+        auth_token:
+            type: string
+            readOnly: true
+
+    Unauthorized:
+      type: object
+      properties:
+        detail:
+            type: string
+            example: "Учетные данные не были предоставлены."
+    Forbidden:
+      type: object
+      properties:
+        detail:
+            type: string
+            example: "У вас недостаточно прав для выполнения данного действия."
+    Not_Found:
+      type: object
+      properties:
+        detail:
+          type: string
+          example: "Страница не найдена."
