@@ -1,5 +1,4 @@
 from django.db import models
-from messages.models import Message
 from users.models import User
 # Create your models here.
 
