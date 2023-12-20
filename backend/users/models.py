@@ -6,6 +6,10 @@ from django.db.models import PROTECT
 from validators import validate_username
 
 
+class Education(models.Model):
+    pass
+
+
 class User(AbstractUser):
     username = models.CharField(
         max_length=20,
