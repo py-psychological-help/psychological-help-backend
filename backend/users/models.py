@@ -10,8 +10,6 @@ class User(AbstractUser):
     username = models.CharField(
         max_length=20,
         unique=True,
-        blank=True,
-        null=True,
         help_text='Обязательное поле. 5-15 символов.'
                   'Разрешены только буквы, цифры и знаки -/_',
         error_messages={
@@ -23,7 +21,7 @@ class User(AbstractUser):
         ]
     )
     first_name = models.CharField(max_length=150, blank=False)
-    second_name = models.CharField(max_length=150, blank=False)
+    last_name = models.CharField(max_length=150, blank=False)
     photo = models.ImageField(
         upload_to='photos/'
     )
