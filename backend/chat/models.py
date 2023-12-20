@@ -6,9 +6,7 @@ from users.models import User
 class Chat(models.Model):
     """Класс модели Чат. Диалог между пользователем и психологом."""
     id = models.CharField(_("id"),
-                          primary_key=True,
-                          editable=False,
-                          max_length=50)
+                          primary_key=True)
     chat_secret_key = None
     consumer_id = models.ForeignKey(User, null=True, related_name="chats")
     psychologist_id = models.ForeignKey(User, null=True, related_name="chats")
@@ -23,9 +21,7 @@ class Chat(models.Model):
 
 class Message(models.Model):
     id = models.CharField(_("id"),
-                          primary_key=True,
-                          editable=False,
-                          max_length=50)
+                          primary_key=True)
     chat_id = models.ForeignKey(Chat, on_delete=models.CASCADE)
     author = models.ForeignKey(User,
                                on_delete=models.CASCADE,
