@@ -1,7 +1,7 @@
 from django.core.validators import MinLengthValidator
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.db.models import PROTECT
+from django.db.models import PROTECT #лишнее
 
 from validators import validate_username
 
@@ -32,6 +32,6 @@ class User(AbstractUser):
     approved_by_moderator = models.BooleanField(blank=True)
     education = models.ForeignKey(
         Education,
-        on_delete=PROTECT,
+        on_delete=PROTECT, # зачем ПРОТЕКТ? удаляем узера - пускай удаляется и образорвание: models.CASCAD
         blank=True
     )
