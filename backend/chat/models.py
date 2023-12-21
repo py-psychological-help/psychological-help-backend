@@ -1,6 +1,8 @@
 from django.db import models
-from users.models import User
+from django.contrib.auth import get_user_model
+
 # Create your models here.
+User = get_user_model()
 
 
 class Chat(models.Model):
@@ -11,6 +13,7 @@ class Chat(models.Model):
     consumer_id = models.ForeignKey(User, null=True, related_name="chats")
     psychologist_id = models.ForeignKey(User, null=True, related_name="chats")
     is_active = models.BooleanField(default=True)
+    message_set = Message.objects.get(chat_id=id)
     psy_messages = Message.objects.get(author=psychologist_id)
     consumer_messages = Message.objects.get(author=consumer_id)
 
@@ -32,5 +35,6 @@ class Message(models.Model):
     text = models.TextField("Текст сообщения")
 
     class Meta:
+        ordering = ('-date_time',)
         verbose_name = "сообщение"
         verbose_name_plural = "сообщения"
