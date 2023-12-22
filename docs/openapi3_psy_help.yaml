@@ -76,7 +76,7 @@ paths:
                       example: Обязательное поле.
       tags:
       - api
-  /api/users/psychologist/me/:
+  /api/v1/users/psychologist/me/:
     get:
       operationId: retrieveMe
       description: ''
@@ -216,7 +216,7 @@ paths:
       tags:
       - api
 
-  /api/users/psychologist/me/education/:
+  /api/v1/users/psychologist/me/education/:
     get:
       operationId: listEducations
       description: ''
@@ -270,7 +270,7 @@ paths:
                       example: Обязательное поле.
       tags:
       - api
-  /api/users/psychologist/me/education/{id}/:
+  /api/v1/users/psychologist/me/education/{id}/:
     delete:
       operationId: deleteEducation
       description: ''
@@ -298,7 +298,7 @@ paths:
                   $ref: '#/components/schemas/Not_Found'
       tags:
         - api
-  /api/users/psychologist/{id}/:
+  /api/v1/users/psychologist/{id}/:
     get:
       operationId: retrievePsychologist
       description: ''
@@ -506,7 +506,7 @@ paths:
       tags:
       - api
 
-  /api/users/reset_password/:
+  /api/v1/users/reset_password/:
     post:
       operationId: resetPasswordUser
       description: ''
@@ -537,7 +537,7 @@ paths:
                   $ref: '#/components/schemas/Unauthorized'
       tags:
       - api
-  /api/users/reset_password_confirm/:
+  /api/v1/users/reset_password_confirm/:
     post:
       operationId: resetPasswordConfirmUser
       description: ''
@@ -563,7 +563,7 @@ paths:
       tags:
       - api
 
-  /api/token/login/:
+  /api/v1/token/login/:
     post:
       operationId: createTokenCreate
       description: Use this endpoint to obtain user authentication token.
@@ -602,7 +602,7 @@ paths:
                       example: Поле обязательно для заполнения!
       tags:
       - api
-  /api/token/logout/:
+  /api/v1/token/logout/:
     post:
       operationId: createTokenDestroy
       description: Use this endpoint to logout user (remove user authentication token).
@@ -749,6 +749,9 @@ components:
           type: integer
           format: string
         active:
+          type: boolean
+          format: boolian
+        new:
           type: boolean
           format: boolian
         messages:
