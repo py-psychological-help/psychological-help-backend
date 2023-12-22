@@ -6,9 +6,7 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-o)@akfc1(r96v%*@wkzq5kj(*tc@&f)@yr739vkr4h&ml)hnbw'
-
-# SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = os.getenv('DEBUG') in ['TRUE', 'true', '1', 'yes']
 
@@ -130,8 +128,8 @@ DJOSER = {
         'user': ['rest_framework.permissions.IsAuthenticated', ],
     },
     'SERIALIZERS': {
-        'user_create': 'users.serializers.CreateUserSerializer',
-        'user': 'users.serializers.UserListSerializer',
-        'current_user': 'users.serializers.UserListSerializer',
+        'user_create': 'api.serializers.CreateUserSerializer',
+        'user': 'api.serializers.UserListSerializer',
+        'current_user': 'api.serializers.UserListSerializer',
     },
 }
