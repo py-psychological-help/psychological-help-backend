@@ -1,12 +1,13 @@
 openapi: 3.0.2
 info:
   title: 'Psychology help'
-  version: '1'
+  description: 'Документация API к сервису PSYHELP. [Актуальная версия на GitHub](https://github.com/py-psychological-help/psychological-help-backend/blob/develop/docs/openapi3_psy_help.yaml)'
+  version: '0.1.5'
 paths:
   /api/v1/users/psychologist/:
     get:
       operationId: listPsychologist
-      description: ''
+      description: 'Get all psychologists list (with pagination)'
       parameters:
       - name: page
         required: false
@@ -79,7 +80,7 @@ paths:
   /api/v1/users/psychologist/me/:
     get:
       operationId: retrieveMe
-      description: ''
+      description: 'Get psychologist information'
       parameters: []
       responses:
         '200':
@@ -98,7 +99,7 @@ paths:
       - api
     put:
       operationId: updatePsychologist
-      description: ''
+      description: 'Psychologist full update'
       parameters: []
       requestBody:
         content:
@@ -134,7 +135,7 @@ paths:
                       example: Поле обязательно для заполнения!
                     birth_date:
                       type: string
-                      example: Поле обязательно для заполнения!
+                      example: Вам должно быть более 18 лет!
         '401':
             description: Unauthorized.
             content:
@@ -158,7 +159,7 @@ paths:
       - api
     patch:
       operationId: partialUpdatePsychologist
-      description: ''
+      description: 'Psychologist partial update. Use it for registration.'
       parameters: []
       requestBody:
         content:
@@ -219,7 +220,7 @@ paths:
   /api/v1/users/psychologist/me/education/:
     get:
       operationId: listEducations
-      description: ''
+      description: 'Get my education information.'
       parameters: []
       responses:
         '200':
@@ -240,7 +241,7 @@ paths:
       - api
     post:
       operationId: createEducation
-      description: 'Create new education'
+      description: 'Create new education object.'
       parameters: []
       requestBody:
         content:
@@ -271,9 +272,16 @@ paths:
       tags:
       - api
   /api/v1/users/psychologist/me/education/{id}/:
+    parameters:
+      - name: id
+        required: true
+        in: path
+        description: A chat secret key.
+        schema:
+          type: integer
     delete:
       operationId: deleteEducation
-      description: ''
+      description: 'Delete my certain education object.'
       parameters: []
       responses:
         '204':
@@ -301,7 +309,7 @@ paths:
   /api/v1/users/psychologist/{id}/:
     get:
       operationId: retrievePsychologist
-      description: ''
+      description: 'Get certain psychologist info.'
       parameters:
       - name: id
         in: path
@@ -340,7 +348,7 @@ paths:
   /api/v1/chat/:
     get:
       operationId: listChats
-      description: 'get chat list'
+      description: 'Get chats list. Diffetent for different Users.'
       parameters:
         - in: path
           name: active
@@ -382,7 +390,7 @@ paths:
 
     post:
       operationId: createChat
-      description: ''
+      description: 'Create chat. Only allowed for Anonimous.'
       parameters: []
       responses:
         '201':
@@ -400,10 +408,17 @@ paths:
       tags:
       - api
 
-  /api/v1/chat/{chat_id}/:
+  /api/v1/chat/{chat_secret_key}/:
+    parameters:
+      - name: chat_secret_key
+        required: true
+        in: path
+        description: A chat secret key.
+        schema:
+          type: string
     get:
       operationId: getChat
-      description: ''
+      description: 'Get certain chat by secret_key.'
       parameters: []
       responses:
         '200':
@@ -423,7 +438,7 @@ paths:
 
     post:
       operationId: sendMessage
-      description: 'send message to chat'
+      description: 'Send message to chat.'
       responses:
         '201':
           content:
@@ -453,7 +468,7 @@ paths:
 
     delete:
       operationId: destroyChat
-      description: ''
+      description: 'Delete chat by chat_secret_key.'
       parameters: []
       responses:
         '204':
@@ -479,10 +494,17 @@ paths:
       tags:
         - api
 
-  /api/v1/chat/{chat_id}/finish/:
+  /api/v1/chat/{chat_secret_key}/finish/:
+    parameters:
+      - name: chat_secret_key
+        required: true
+        in: path
+        description: A chat secret key.
+        schema:
+          type: string
     post:
       operationId: deactivate_chat
-      description: ''
+      description: 'Finish chat by chat_secret_key.'
       parameters: []
       responses:
         '201':
@@ -509,7 +531,7 @@ paths:
   /api/v1/users/reset_password/:
     post:
       operationId: resetPasswordUser
-      description: ''
+      description: 'Reset password if lose.'
       parameters: []
       requestBody:
         content:
@@ -540,7 +562,7 @@ paths:
   /api/v1/users/reset_password_confirm/:
     post:
       operationId: resetPasswordConfirmUser
-      description: ''
+      description: 'Confirm password reseting by email-code.'
       parameters: []
       requestBody:
         content:
