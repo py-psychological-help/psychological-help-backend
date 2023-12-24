@@ -5,7 +5,7 @@ import string
 from chat.models import Chat
 
 
-def create_randomid(lenth=10):
+def create_randomid(length=10):
     later = string.ascii_letters + '0123456789'
     while True:
         id = ''
