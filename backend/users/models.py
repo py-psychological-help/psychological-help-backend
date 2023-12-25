@@ -2,20 +2,22 @@ from django.core.validators import MinLengthValidator
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+from django.conf import settings
 from .validators import validate_username
 
 
 class User(AbstractUser):
     username = models.CharField(
-        max_length=20,
+        max_length=settings.MAX_USERNAME_LENGTH,
         unique=True,
-        help_text='Обязательное поле. 5-15 символов.'
+        help_text='Обязательное поле. 5-20 символов.'
                   'Разрешены только буквы, цифры и знаки -/_',
         error_messages={
             'unique': "Пользователь с таким логином уже существует.",
         },
         validators=[
-            MinLengthValidator(5, 'Минимум 5 символов'),
+            MinLengthValidator(settings.MIN_USERNAME_LENGTH,
+                               'Минимум 5 символов'),
             validate_username,
         ]
     )
@@ -38,6 +40,12 @@ class User(AbstractUser):
         upload_to='photos/'
     )
     approved_by_moderator = models.BooleanField(blank=True)
+    email = models.EmailField('email адрес', blank=False, unique=True)
+    is_staff = models.BooleanField(
+        'staff status',
+        default=False,
+        help_text=('Designates whether the user can log into this admin '
+                   'site.'))
 
 
 class Education(models.Model):
