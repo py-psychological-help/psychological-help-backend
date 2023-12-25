@@ -1,13 +1,9 @@
 from django.core.validators import MinLengthValidator
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.db.models import PROTECT #лишнее
+
 
 from validators import validate_username
-
-
-class Education(models.Model):
-    pass
 
 
 class User(AbstractUser):
@@ -24,14 +20,31 @@ class User(AbstractUser):
             validate_username,
         ]
     )
-    first_name = models.CharField(max_length=150, blank=False)
-    last_name = models.CharField(max_length=150, blank=False)
+    first_name = models.CharField(
+        max_length=150,
+        blank=False,
+        verbose_name='Имя'
+    )
+    last_name = models.CharField(
+        max_length=150,
+        blank=False,
+        verbose_name='Фамилия'
+    )
+    patronymic = models.CharField(
+        max_length=150,
+        blank=True,
+        verbose_name='Отчество'
+    )
     photo = models.ImageField(
         upload_to='photos/'
     )
     approved_by_moderator = models.BooleanField(blank=True)
-    education = models.ForeignKey(
-        Education,
-        on_delete=PROTECT, # зачем ПРОТЕКТ? удаляем узера - пускай удаляется и образорвание: models.CASCAD
-        blank=True
+
+
+class Education(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='Психолог',
+        related_name='education'
     )
