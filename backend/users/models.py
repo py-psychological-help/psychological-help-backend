@@ -2,8 +2,7 @@ from django.core.validators import MinLengthValidator
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-
-from validators import validate_username
+from .validators import validate_username
 
 
 class User(AbstractUser):
