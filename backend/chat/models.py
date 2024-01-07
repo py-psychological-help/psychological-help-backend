@@ -6,16 +6,17 @@ User = get_user_model()
 
 
 class Chat(models.Model):
-    """Класс модели Чат. Диалог между пользователем и психологом."""
-    id = models.CharField(_("id"),
-                          primary_key=True)
+    id = models.CharField(("id"),
+                          primary_key=True,
+                          max_length=25)
     chat_secret_key = None
-    consumer_id = models.ForeignKey(User, null=True, related_name="chats")
-    psychologist_id = models.ForeignKey(User, null=True, related_name="chats")
+    consumer = models.ForeignKey(User, null=True,
+                                 related_name="consumer_chats",
+                                 on_delete=models.CASCADE)
+    psychologist = models.ForeignKey(User, null=True,
+                                     related_name="psychologist_chats",
+                                     on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
-    message_set = Message.objects.get(chat_id=id)
-    psy_messages = Message.objects.get(author=psychologist_id)
-    consumer_messages = Message.objects.get(author=consumer_id)
 
     class Meta:
         verbose_name = "чат"
@@ -23,8 +24,9 @@ class Chat(models.Model):
 
 
 class Message(models.Model):
-    id = models.CharField(_("id"),
-                          primary_key=True)
+    id = models.CharField(("id"),
+                          primary_key=True,
+                          max_length=25)
     chat_id = models.ForeignKey(Chat, on_delete=models.CASCADE)
     author = models.ForeignKey(User,
                                on_delete=models.CASCADE,
