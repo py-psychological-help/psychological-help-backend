@@ -3,8 +3,10 @@ info:
   title: 'Psychology help'
   description: 'Документация API к сервису PSYHELP. [Актуальная версия на GitHub](https://github.com/py-psychological-help/psychological-help-backend/blob/develop/docs/openapi3_psy_help.yaml)'
   version: '0.1.5'
+servers:
+  - url: .../api/v1
 paths:
-  /api/v1/users/psychologist/:
+  /users/psychologists/:
     get:
       operationId: listPsychologist
       description: 'Get all psychologists list (with pagination)'
@@ -50,19 +52,19 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PsychologistCreate'
+              $ref: '#/components/schemas/Psychologist'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PsychologistCreate'
+              $ref: '#/components/schemas/Psychologist'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PsychologistCreate'
+              $ref: '#/components/schemas/Psychologist'
       responses:
         '201':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PsychologistCreate'
+                $ref: '#/components/schemas/Psychologist'
           description: ''
         '400':
             description: Bad request.
@@ -77,7 +79,7 @@ paths:
                       example: Обязательное поле.
       tags:
       - api
-  /api/v1/users/psychologist/me/:
+  /users/psychologists/me/:
     get:
       operationId: retrieveMe
       description: 'Get psychologist information'
@@ -99,7 +101,7 @@ paths:
       - api
     put:
       operationId: updatePsychologist
-      description: 'Psychologist full update'
+      description: 'Psychologist full update. Должен слетать аппрув при изменении данных.'
       parameters: []
       requestBody:
         content:
@@ -159,7 +161,7 @@ paths:
       - api
     patch:
       operationId: partialUpdatePsychologist
-      description: 'Psychologist partial update. Use it for registration.'
+      description: 'Psychologist partial update.Должен слетать аппрув при изменении данных'
       parameters: []
       requestBody:
         content:
@@ -217,7 +219,7 @@ paths:
       tags:
       - api
 
-  /api/v1/users/psychologist/me/education/:
+  /users/psychologists/me/education/:
     get:
       operationId: listEducations
       description: 'Get my education information.'
@@ -271,7 +273,7 @@ paths:
                       example: Обязательное поле.
       tags:
       - api
-  /api/v1/users/psychologist/me/education/{id}/:
+  /users/psychologists/me/education/{id}/:
     parameters:
       - name: id
         required: true
@@ -306,10 +308,10 @@ paths:
                   $ref: '#/components/schemas/Not_Found'
       tags:
         - api
-  /api/v1/users/psychologist/{id}/:
+  /users/psychologists/{id}/:
     get:
       operationId: retrievePsychologist
-      description: 'Get certain psychologist info.'
+      description: 'Get certain psychologist info. Only for Admin.'
       parameters:
       - name: id
         in: path
@@ -344,11 +346,36 @@ paths:
                   $ref: '#/components/schemas/Not_Found'
       tags:
       - api
+  /users/clients/:
+    post:
+      operationId: createClient
+      description: 'Create user. Так же создается экземпляр чата в БД, привязанный к этому пользователюю'
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientCreate'
+      responses:
+        '200':
+          description: 'Created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientCreate'
+        '403':
+            description: 'Forbidden. If authenticated.'
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Forbidden'
+      tags:
+        - api
 
-  /api/v1/chat/:
+  /chats/:
     get:
       operationId: listChats
-      description: 'Get chats list. Diffetent for different Users.'
+      description: 'Get chats list. Ayth only, for Psychologists.'
       parameters:
         - in: path
           name: active
@@ -371,7 +398,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Chat'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Chat'
           description: ''
         '401':
             description: Unauthorized.
@@ -388,27 +417,32 @@ paths:
       tags:
       - api
 
-    post:
-      operationId: createChat
-      description: 'Create chat. Only allowed for Anonimous.'
-      parameters: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Chat'
-          description: ''
-        '403':
-            description: Forbidden.
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/Forbidden'
-      tags:
-      - api
+    # post:
+    #   operationId: createChat
+    #   description: 'Create chat. Only allowed for Anonimous.'
+    #   parameters: []
+    #   requestBody:
+    #     content:
+    #       application/json:
+    #         schema:
+    #           $ref: '#/components/schemas/Chat'
+    #   responses:
+    #     '201':
+    #       content:
+    #         application/json:
+    #           schema:
+    #             $ref: '#/components/schemas/Chat'
+    #       description: ''
+    #     '403':
+    #         description: Forbidden.
+    #         content:
+    #           application/json:
+    #             schema:
+    #               $ref: '#/components/schemas/Forbidden'
+    #   tags:
+    #   - api
 
-  /api/v1/chat/{chat_secret_key}/:
+  /chats/{chat_secret_key}/:
     parameters:
       - name: chat_secret_key
         required: true
@@ -493,8 +527,7 @@ paths:
                   $ref: '#/components/schemas/Not_Found'
       tags:
         - api
-
-  /api/v1/chat/{chat_secret_key}/finish/:
+  /chats/{chat_secret_key}/start/:
     parameters:
       - name: chat_secret_key
         required: true
@@ -503,8 +536,8 @@ paths:
         schema:
           type: string
     post:
-      operationId: deactivate_chat
-      description: 'Finish chat by chat_secret_key.'
+      operationId: activate_chat
+      description: 'Start chat by psychologist. При обращении к эндпоинту chat_secret_key отправляется клиенту на почту.'
       parameters: []
       responses:
         '201':
@@ -528,7 +561,41 @@ paths:
       tags:
       - api
 
-  /api/v1/users/reset_password/:
+  /chats/{chat_secret_key}/finish/:
+    parameters:
+      - name: chat_secret_key
+        required: true
+        in: path
+        description: A chat secret key.
+        schema:
+          type: string
+    post:
+      operationId: deactivate_chat
+      description: 'Finish chat by chat_secret_key. Чат переводится в неактивные.'
+      parameters: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chat'
+          description: ''
+        '403':
+            description: Forbidden.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Forbidden'
+        '404':
+            description: Not found.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Not_Found'
+      tags:
+      - api
+
+  /users/reset_password/:
     post:
       operationId: resetPasswordUser
       description: 'Reset password if lose.'
@@ -559,7 +626,7 @@ paths:
                   $ref: '#/components/schemas/Unauthorized'
       tags:
       - api
-  /api/v1/users/reset_password_confirm/:
+  /users/reset_password_confirm/:
     post:
       operationId: resetPasswordConfirmUser
       description: 'Confirm password reseting by email-code.'
@@ -585,7 +652,7 @@ paths:
       tags:
       - api
 
-  /api/v1/token/login/:
+  /auth/token/login/:
     post:
       operationId: createTokenCreate
       description: Use this endpoint to obtain user authentication token.
@@ -624,7 +691,7 @@ paths:
                       example: Поле обязательно для заполнения!
       tags:
       - api
-  /api/v1/token/logout/:
+  /auth/token/logout/:
     post:
       operationId: createTokenDestroy
       description: Use this endpoint to logout user (remove user authentication token).
@@ -653,9 +720,46 @@ components:
           type: integer
           readOnly: true
           example: 1
-        username:
+        first_name:
           type: string
-          maxLength: 16
+        last_name:
+          type: string
+        birth_date:
+          type: string
+          format: date
+          example: 01-01-2000
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        password:
+          type: string
+          writeOnly: true
+        photo:
+          type: string
+          format: binary
+        education:
+          type: array
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/Education'
+        approved:
+            type: boolean
+            format: boolean
+            readOnly: true
+      required:
+      - first_name
+      - last_name
+      - birth_date
+      - email
+      - password
+
+    PsychologistUpdate:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
         first_name:
           type: string
         second_name:
@@ -663,18 +767,11 @@ components:
         birth_date:
           type: string
           format: date
+          minimum: 1900
+          maximum: 2005
         photo:
           type: string
-          format: binary
-        education:
-          type: array
-          items:
-            $ref: '#/components/schemas/Education'
-        approved:
-            type: boolean
-            format: boolean
       required:
-      - username
       - first_name
       - second_name
       - birth_date
@@ -705,79 +802,86 @@ components:
       required:
         - scan
 
-    PsychologistCreate:
+    ClientCreate:
       type: object
       properties:
+        id:
+          type: integer
+          example: 1
+          readOnly: true
+        complaint:
+          type: integer
+          example: 1
+        text:
+          type: string
+          format: string
         email:
           type: string
           format: email
           maxLength: 254
-        username:
+        first_name:
           type: string
-          description: Required. 20 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+\z
-          maxLength: 20
-          example: stop_despondency
-        id:
-          type: integer
-          readOnly: true
-          example: 1
-        token:
-          type: string
-          readOnly: true
-          example: kdasjbfjhbccvubaskdjfbhdsavjfv
-        group:
-            type: string
-            readOnly: true
-            example: psychologist
-        password:
-          type: string
-          writeOnly: true
       required:
-      - username
-      - password
+      - complaint
       - email
-
-    PsychologistUpdate:
+    Client:
       type: object
       properties:
         id:
           type: integer
+          example: 1
           readOnly: true
+        complaint:
+          type: integer
+          example: 1
+        text:
+          type: string
+          format: string
+        email:
+          type: string
+          format: email
+          maxLength: 254
         first_name:
           type: string
-        second_name:
-          type: string
-        birth_date:
-          type: string
-          format: date
-          minimum: 1900
-          maximum: 2005
-        photo:
-          type: string
       required:
-      - first_name
-      - second_name
-      - birth_date
+      - complaint
+      - email
     
     Chat:
       type: object
       properties:
-        chat_id:
-          type: string
-          format: string
+        client:
+          type: object
+          properties:
+            complaint:
+              type: string
+              format: string
+            text:
+              type: string
+              format: string
+            first_name:
+              type: string
+              readOnly: true
         id:
           type: integer
+          format: integer
+          readOnly: true
+          example: 1122
+        chat_secret_key:
+          type: string
           format: string
+          readOnly: true
         active:
           type: boolean
           format: boolian
+          readOnly: true
         new:
           type: boolean
           format: boolian
+          readOnly: true
         messages:
           type: array
+          readOnly: true
           items:
             type: object
             properties:
@@ -788,8 +892,15 @@ components:
                 type: string
               text:
                 type: string
+              is_author_me:
+                type: boolean
+                example: true
               author:
-                type: string
+                type: integer
+                example: 1
+      required:
+        - complaint
+        - email
 
     Message:
       type: object
