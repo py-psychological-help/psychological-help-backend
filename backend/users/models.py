@@ -37,9 +37,9 @@ class User(AbstractUser):
         verbose_name='Отчество'
     )
     photo = models.ImageField(
-        upload_to='photos/'
+        upload_to='photos/', blank=True
     )
-    approved_by_moderator = models.BooleanField(blank=True)
+    approved_by_moderator = models.BooleanField(blank=False, default=False)
     email = models.EmailField('email адрес', blank=False, unique=True)
     is_staff = models.BooleanField(
         'staff status',
