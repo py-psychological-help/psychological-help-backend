@@ -1,0 +1,15 @@
+{% extends "mail_templated/base.tpl" %}
+
+{% block subject %}
+  Психолог готов вас принять!
+{% endblock %}
+
+{% block html %}
+  <br>
+  Вот ссылка на чат с вашим психологом:
+  <br>
+  <a href="{{ chat_url }}/"> {{ chat_url }} </a>
+  <br>
+  <br>
+  С уважением, Команда «Давай поговорим»
+{% endblock %}
