@@ -6,12 +6,13 @@ from .views import (UserMe)
 
 router_users = DefaultRouter()
 
-# router_users.register('psychologists/',
-#                 UserViewSet,
-#                 basename='psychologists',)
+router_users.register('psychologists',
+                UserViewSet,
+                basename='psychologists',)
 
 urlpatterns = [
     path('users/psychologists/me/', UserMe.as_view()),
+    path('users/', include(router_users.urls),),
     path('auth/', include('djoser.urls.authtoken')),
     path('users/psychologists/', UserViewSet.as_view({'get': 'list',
                                                       'post': 'create'}),),
