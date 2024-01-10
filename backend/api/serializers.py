@@ -40,8 +40,9 @@ class UserSerializer(serializers.ModelSerializer):
     """Сериализатор отображения Пользователей."""
 
     photo = Base64ImageField(required=False, allow_null=True)
-    education = EducationSerializer(many=True)
-    approved = serializers.BooleanField(source='approved_by_moderator')
+    education = EducationSerializer(many=True, read_only=True)
+    approved = serializers.BooleanField(source='approved_by_moderator',
+                                        read_only=True)
     class Meta:
         fields = ('id',
                   'first_name',
