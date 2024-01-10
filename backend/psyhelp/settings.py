@@ -194,5 +194,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 MAX_EMAIL_LEN = 50
+MAX_USER_LEN = 50
 
 CHAT_SECRET_KEY_LENGTH = 20
