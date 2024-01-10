@@ -6,6 +6,8 @@ from django.contrib.auth.hashers import make_password
 from django.core.files.base import ContentFile
 from rest_framework import serializers
 
+from users.models import Education
+
 User = get_user_model()
 
 
@@ -21,20 +23,37 @@ class Base64ImageField(serializers.ImageField):
 
         return super().to_internal_value(data)
 
+class EducationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        fields = ('id',
+                  'university',
+                  'faculty',
+                  'specialization',
+                  'year_of_graduation',
+                  'scan'
+                  )
+        model = Education
+
 
 class UserSerializer(serializers.ModelSerializer):
     """Сериализатор отображения Пользователей."""
 
     photo = Base64ImageField(required=False, allow_null=True)
-
+    education = EducationSerializer(many=True, read_only=True)
+    approved = serializers.BooleanField(source='approved_by_moderator',
+                                        read_only=True)
     class Meta:
         fields = ('id',
                   'first_name',
                   'last_name',
                   'birth_date',
                   'email',
-                  'photo'
+                  'photo',
+                  'education',
+                  'approved'
                   )
+        read_only_fields = ('approved',)
         model = User
 
 
@@ -45,17 +64,21 @@ class UserCreateSerializer(UserSerializer):
                                    max_length=settings.MAX_EMAIL_LEN)
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
+    approved = serializers.BooleanField(source='approved_by_moderator',
+                                        read_only=True)
 
     class Meta:
         model = User
-        fields = ('email',
-                  'id',
+        fields = ('id',
+                  'email',
                   'first_name',
                   'last_name',
-                  'password')
+                  'password',
+                  'approved')
         read_only_fields = ('id',
                             'first_name',
-                            'last_name',)
+                            'last_name',
+                            'approved')
         extra_kwargs = {'password': {'write_only': True}, }
 
     def validate_email(self, email):

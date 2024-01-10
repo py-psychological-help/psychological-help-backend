@@ -166,8 +166,8 @@ DJOSER = {
         'user_create': 'api.serializers.UserCreateSerializer', },
     'LOGIN_FIELD': 'email',
     'PERMISSIONS': {
-        'user': ['api.permissions.IsOwnerOrReadOnly'],
-        'user_list': ['rest_framework.permissions.AllowAny'], },
+        'user': ['rest_framework.permissions.IsAuthenticated'],
+        'user_list': ['rest_framework.permissions.IsAuthenticated'], },
     'HIDE_USERS': False,
 }
 
@@ -194,5 +194,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 MAX_EMAIL_LEN = 50
+MAX_USER_LEN = 50
 
 CHAT_SECRET_KEY_LENGTH = 20

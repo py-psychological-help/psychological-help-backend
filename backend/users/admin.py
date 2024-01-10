@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import CustomUser, Education
+from .models import CustomUser, Education, CustomClientUser
 
 
 @admin.register(CustomUser)
@@ -17,3 +17,9 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ('pk', 'user',
                     'university', 'faculty',
                     'specialization', 'year_of_graduation')
+    
+
+@admin.register(CustomClientUser)
+class UserAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'email',
+                    'first_name', 'last_name', 'birth_date')
