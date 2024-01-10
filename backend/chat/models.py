@@ -6,9 +6,6 @@ User = get_user_model()
 
 
 class Chat(models.Model):
-    id = models.CharField(("id"),
-                          primary_key=True,
-                          max_length=25)
     chat_secret_key = None
     consumer = models.ForeignKey(User, null=True,
                                  related_name="consumer_chats",
@@ -19,13 +16,11 @@ class Chat(models.Model):
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.title
+        return str(str(self.consumer) + str(self.psychologist))
 
 
 class Message(models.Model):
-    id = models.CharField(("id"),
-                          primary_key=True,
-                          max_length=25)
+    
     chat = models.ForeignKey(Chat,
                                 on_delete=models.CASCADE,
                                 related_name='messages')
