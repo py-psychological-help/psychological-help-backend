@@ -1,10 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
+from django.utils import timezone
 
 from .managers import CustomUserManager
-from django.utils import timezone
-from django.conf import settings
 
 from .validators import year_validator
 
