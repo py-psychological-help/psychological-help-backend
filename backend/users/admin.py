@@ -10,4 +10,4 @@ class UserAdmin(admin.ModelAdmin):
                     'approved_by_moderator', 'role')
     list_filter = ('email', 'approved_by_moderator')
     search_fields = ('email',)
-    # pass
+
