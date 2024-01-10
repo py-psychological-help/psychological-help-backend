@@ -1,0 +1,16 @@
+{% extends "mail_templated/base.tpl" %}
+
+{% block subject %}
+Ваш код подтверждения.
+{% endblock %}
+
+{% block html %}
+
+<br>
+Ваш код подтверждения почты на сервисе <solid>Давай поговорим</solid>
+<br>
+<h1> {{ confirmation_code }} </h1>
+<br>
+<br>
+С уважением, Команда «Давай поговорим»
+{% endblock %}

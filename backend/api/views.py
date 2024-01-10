@@ -1,20 +1,34 @@
-from django.shortcuts import render
-from rest_framework import viewsets
-# Create your views here.
+from rest_framework import viewsets, permissions, filters
+from rest_framework.pagination import LimitOffsetPagination
+from django.shortcuts import get_object_or_404
 
+from .permissions import AuthorOrReadOnly
 from chat.models import Chat, Message
 from .serializers import ChatSerializer, MessageSerializer
+from .viewsets import ListCreateViewSet
 
 
 class ChatViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Chat.objects.all()
     serializer_class = ChatSerializer
+    pagination_class = LimitOffsetPagination
+    #permission_classes = (AuthorOrReadOnly,)
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
 
 class MessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
+    #permission_classes = (AuthorOrReadOnly,)
 
     def get_queryset(self):
         chat_id = self.kwargs.get('chat_id')
-        new_queryset = Message.objects.filter(chat=chat_id)
-        return new_queryset
+        chat = get_object_or_404(Chat, pk=chat_id)
+        return chat.messages.all()
+
+    def perform_create(self, serializer):
+        chat_id = self.kwargs.get('chat_id')
+        author = self.request.user
+        chat = get_object_or_404(Chat, pk=chat_id)
+        serializer.save(author=author, chat=chat)

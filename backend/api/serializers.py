@@ -8,21 +8,23 @@ from chat.models import Chat, Message
 User = get_user_model()
 
 
-class MessageSerializer(serializers.ModelSerializer):
-    author = SlugRelatedField(slug_field='username', read_only=True)
-    chat = serializers.StringRelatedField(read_only=True)
-
-    class Meta:
-        model = Message
-
-
 class ChatSerializer(serializers.ModelSerializer):
     consumer = SlugRelatedField(slug_field='username',
                                 read_only=True)
     psychologist = SlugRelatedField(slug_field='username',
                                     read_only=True)
-    messages = serializers.StringRelatedField(many=True, read_only=True)
 
     class Meta:
+        fields = '__all__'
         model = Chat
-        fields = ['consumer', 'psychologist', 'messages']
+
+
+class MessageSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(
+        read_only=True, slug_field='username'
+    )
+
+    class Meta:
+        fields = '__all__'
+        read_only_fields = ['chat']
+        model = Message

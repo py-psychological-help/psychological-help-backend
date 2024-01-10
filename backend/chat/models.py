@@ -18,16 +18,17 @@ class Chat(models.Model):
                                      on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
 
-    class Meta:
-        verbose_name = "чат"
-        verbose_name_plural = "чаты"
+    def __str__(self):
+        return self.title
 
 
 class Message(models.Model):
     id = models.CharField(("id"),
                           primary_key=True,
                           max_length=25)
-    chat_id = models.ForeignKey(Chat, on_delete=models.CASCADE)
+    chat = models.ForeignKey(Chat,
+                                on_delete=models.CASCADE,
+                                related_name='messages')
     author = models.ForeignKey(User,
                                on_delete=models.CASCADE,
                                related_name="messages")
