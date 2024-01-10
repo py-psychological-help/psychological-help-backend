@@ -1,16 +1,13 @@
 from django.contrib import admin
 
-from .models import User
+from .models import CustomUser
 
 
-@admin.register(User)
+@admin.register(CustomUser)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'username', 'email',
+    list_display = ('pk', 'email',
                     'first_name', 'last_name',
-                    'approved_by_moderator', )
-    # list_editable = ('username', 'email',
-    #                  'first_name', 'last_name',
-    #                  'approved_by_moderator')
-    list_filter = ('username', 'email', 'approved_by_moderator')
-    search_fields = ('username', 'email')
+                    'approved_by_moderator', 'role')
+    list_filter = ('email', 'approved_by_moderator')
+    search_fields = ('email',)
     # pass
