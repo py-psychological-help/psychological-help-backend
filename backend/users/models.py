@@ -1,9 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
+from django.utils import timezone
 
 from .managers import CustomUserManager
-from django.utils import timezone
+
+from .validators import year_validator
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
@@ -59,9 +61,32 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 
 class Education(models.Model):
+    """Модель образования."""
+
     user = models.ForeignKey(
         CustomUser,
         on_delete=models.CASCADE,
         verbose_name='Психолог',
         related_name='education'
+    )
+    university = models.CharField(
+        'Название учебного заведения',
+        max_length=100,
+        blank=True
+    )
+    faculty = models.CharField(
+        'Название факультета',
+        max_length=100,
+        blank=True
+    )
+    specialization = models.CharField(
+        'Название специальности',
+        max_length=100,
+        blank=True
+    )
+    year_of_graduation = models.IntegerField('Год окончания',
+                                             validators=[year_validator, ])
+
+    scan = models.ImageField(
+        upload_to='scans', blank=False
     )
