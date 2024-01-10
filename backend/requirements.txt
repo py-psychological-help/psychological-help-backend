@@ -18,7 +18,9 @@ cssbeautifier==1.14.7
 defusedxml==0.8.0rc2
 distlib==0.3.6
 Django==3.2.16
+django-birthday==0.1.4
 django-debug-toolbar==2.2
+django-cors-headers==4.3.0
 django-filter==23.2
 django-haystack==3.2.1
 django-mail-templated==2.6.5
