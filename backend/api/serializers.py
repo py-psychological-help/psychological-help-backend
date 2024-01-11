@@ -25,8 +25,10 @@ class Base64ImageField(serializers.ImageField):
 
 
 class EducationSerializer(serializers.ModelSerializer):
+    scan = Base64ImageField(required=True, allow_null=False)
 
     class Meta:
+        model = Education
         fields = ('id',
                   'university',
                   'faculty',
@@ -34,7 +36,7 @@ class EducationSerializer(serializers.ModelSerializer):
                   'year_of_graduation',
                   'scan'
                   )
-        model = Education
+        read_only_fields = ('id',)
 
 
 class UserSerializer(serializers.ModelSerializer):
