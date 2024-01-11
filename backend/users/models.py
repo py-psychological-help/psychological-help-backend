@@ -29,7 +29,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     )
     patronymic = models.CharField(
         max_length=150,
-        blank=False,
+        blank=True,
         verbose_name='Отчество'
     )
     role = models.CharField(
@@ -88,7 +88,8 @@ class Education(models.Model):
         blank=True
     )
     year_of_graduation = models.IntegerField('Год окончания',
-                                             validators=[year_validator, ])
+                                             validators=[year_validator, ],
+                                             blank=True)
 
     scan = models.ImageField(
         upload_to='scans', blank=False

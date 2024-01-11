@@ -2,7 +2,7 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from djoser.views import UserViewSet
 
-from .views import (UserMe, CustomClientUserViewSet)
+from .views import (UserMe, CustomClientUserViewSet, EducationViewSet)
 
 router_users = DefaultRouter()
 
@@ -13,6 +13,10 @@ router_users.register('psychologists',
 router_users.register('clients',
                       CustomClientUserViewSet,
                       basename='clients',)
+
+router_users.register(r'psychologists/me/education',
+                      EducationViewSet,
+                      basename='education',)
 
 urlpatterns = [
     path('users/psychologists/me/', UserMe.as_view()),
