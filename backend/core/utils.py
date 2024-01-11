@@ -21,3 +21,7 @@ def create_secret_key(length=10):
 def get_confirmation_code(user):
     """Генерирует ключ подтверждения почты."""
     return default_token_generator.make_token(user)
+
+
+def get_confirmation_code(user):
+    return default_token_generator.make_token(user)

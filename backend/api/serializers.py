@@ -23,6 +23,7 @@ class Base64ImageField(serializers.ImageField):
 
         return super().to_internal_value(data)
 
+
 class EducationSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -43,6 +44,7 @@ class UserSerializer(serializers.ModelSerializer):
     education = EducationSerializer(many=True, read_only=True)
     approved = serializers.BooleanField(source='approved_by_moderator',
                                         read_only=True)
+
     class Meta:
         fields = ('id',
                   'first_name',
