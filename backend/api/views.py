@@ -5,7 +5,8 @@ from rest_framework.permissions import (AllowAny, IsAuthenticated,
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import (UserSerializer, UserCreateSerializer, 
-                          EducationSerializer)
+                          EducationSerializer, CustomClientUserSerializer)
+from users.models import CustomClientUser
 
 
 User = get_user_model()
@@ -73,3 +74,13 @@ class UserMe(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return self.get(request)
+
+
+class CustomClientUserViewSet(viewsets.ModelViewSet):
+    queryset = CustomClientUser.objects.all()
+    serializer_class = CustomClientUserSerializer
+    http_method_names = ['post']
+
+    def perform_create(self, serializer):
+        # тут будет создание чата
+        return super().perform_create(serializer)
