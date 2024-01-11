@@ -16,7 +16,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         ADMIN = 'admin', 'Администратор'
         MODERATOR = 'moderator', 'Модератор'
         PSYCHOLOGIST = 'psychologist', 'Психолог'
-        CLIENT = 'client', 'Клиент'
 
     first_name = models.CharField(
         max_length=150,
@@ -97,9 +96,6 @@ class Education(models.Model):
 
 class CustomClientUser(AbstractBaseUser):
     """Класс пользователей."""
-
-    class Role(models.TextChoices):
-        """Роли пользователей."""
 
     password = models.CharField('password', max_length=128, blank=True)
 

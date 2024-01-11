@@ -6,7 +6,7 @@ from django.contrib.auth.hashers import make_password
 from django.core.files.base import ContentFile
 from rest_framework import serializers
 
-from users.models import Education
+from users.models import Education, CustomClientUser
 
 User = get_user_model()
 
@@ -105,3 +105,14 @@ class UserCreateSerializer(UserSerializer):
         """Переопределение create для хэширования паролей."""
         validated_data['password'] = make_password(validated_data['password'])
         return super(UserSerializer, self).create(validated_data)
+
+
+class CustomClientUserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CustomClientUser
+        fields = ('id',
+                  'email',
+                  'first_name',
+                  'last_name',)
+        read_only_fields = ('id',)
