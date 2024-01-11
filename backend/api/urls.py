@@ -7,12 +7,12 @@ from .views import (UserMe, CustomClientUserViewSet)
 router_users = DefaultRouter()
 
 router_users.register('psychologists',
-                UserViewSet,
-                basename='psychologists',)
+                      UserViewSet,
+                      basename='psychologists',)
 
 router_users.register('clients',
-                CustomClientUserViewSet,
-                basename='clients',)
+                      CustomClientUserViewSet,
+                      basename='clients',)
 
 urlpatterns = [
     path('users/psychologists/me/', UserMe.as_view()),

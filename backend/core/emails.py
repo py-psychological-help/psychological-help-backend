@@ -36,3 +36,4 @@ def send_chat_url(user, chat_url):
                },
               settings.EMAIL_HOST_USER,
               [user.email])
+

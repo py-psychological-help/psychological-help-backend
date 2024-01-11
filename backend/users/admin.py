@@ -17,7 +17,7 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ('pk', 'user',
                     'university', 'faculty',
                     'specialization', 'year_of_graduation')
-    
+
 
 @admin.register(CustomClientUser)
 class UserAdmin(admin.ModelAdmin):

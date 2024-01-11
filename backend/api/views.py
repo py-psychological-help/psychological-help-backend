@@ -1,30 +1,14 @@
 from django.contrib.auth import get_user_model
-from rest_framework import mixins, status, viewsets
-from rest_framework.permissions import (AllowAny, IsAuthenticated,
-                                        IsAuthenticatedOrReadOnly)
+from rest_framework import mixins, viewsets
+from rest_framework.permissions import (AllowAny, IsAuthenticated,)
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import (UserSerializer, UserCreateSerializer, 
-                          EducationSerializer, CustomClientUserSerializer)
-from users.models import CustomClientUser
 
+from core.utils import get_confirmation_code
+from users.models import CustomClientUser
+from .serializers import (UserSerializer, CustomClientUserSerializer)
 
 User = get_user_model()
-
-
-# class UsersViewSet(mixins.UpdateModelMixin,
-#                    mixins.DestroyModelMixin,
-#                    mixins.CreateModelMixin,
-#                    mixins.ListModelMixin,
-#                    mixins.RetrieveModelMixin,
-#                    viewsets.GenericViewSet):
-#     """ViewSet для просмотра и редактирования данных пользователя."""
-
-#     queryset = User.objects.filter(role='PSYCHOLOGIST')
-#     serializer_class = UserSerializer
-#     permission_classes = (AllowAny, )
-#     http_method_names = ['get', 'post']
-#     lookup_field = 'id'
 
 
 class UsersViewSet(mixins.UpdateModelMixin,
@@ -33,14 +17,16 @@ class UsersViewSet(mixins.UpdateModelMixin,
                    mixins.ListModelMixin,
                    mixins.RetrieveModelMixin,
                    viewsets.GenericViewSet):
-    """ViewSet для просмотра пользователей и редактирования
-    данных пользователя."""
+    """
+    ViewSet для просмотра пользователей и редактирования
+    данных пользователя.
+    """
+
     queryset = User.objects.all()
     serializer_class = UserSerializer
     http_method_names = ['get', 'post', 'patch', 'delete']
     permission_classes = (AllowAny, )
     lookup_field = 'id'
-    # search_fields = ('username', )
 
     def perform_create(self, serializer):
         serializer.save()
