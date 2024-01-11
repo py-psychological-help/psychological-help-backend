@@ -29,7 +29,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     )
     patronymic = models.CharField(
         max_length=150,
-        blank=False,
+        blank=True,
         verbose_name='Отчество'
     )
     role = models.CharField(
