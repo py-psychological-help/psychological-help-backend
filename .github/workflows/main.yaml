@@ -84,11 +84,11 @@ jobs:
           context: ./infra/
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/psyhelp_gateway:latest
+
   deploy:
     runs-on: ubuntu-latest
     needs: 
       - build_and_push_to_docker_hub
-      - build_frontend_and_push_to_docker_hub
       - build_gateway_and_push_to_docker_hub
     steps:
     - name: Checkout repo
