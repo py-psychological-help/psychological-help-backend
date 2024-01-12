@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'mail_templated',
     'api.apps.ApiConfig',
+    'chats.apps.ChatsConfig',
     'users.apps.UsersConfig',
     'core.apps.CoreConfig'
 ]
