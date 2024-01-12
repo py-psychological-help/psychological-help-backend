@@ -1,9 +1,9 @@
-name: Main Psyhelp workflow
+name: Develop Psyhelp workflow
 
 on:
   push:
     branches:
-      - main
+      - develop
 
 jobs:
   tests:
@@ -46,7 +46,6 @@ jobs:
 
   send_message:
     runs-on: ubuntu-latest
-    needs: deploy
     steps:
     - name: Send message
       uses: appleboy/telegram-action@master
