@@ -15,7 +15,7 @@ router.register('users/clients',
                       CustomClientUserViewSet,
                       basename='clients',)
 
-router.register(r'user/psychologists/me/education',
+router.register(r'users/psychologists/me/education',
                       EducationViewSet,
                       basename='education',)
 

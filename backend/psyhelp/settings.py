@@ -170,6 +170,8 @@ DJOSER = {
         'user': ['rest_framework.permissions.IsAuthenticated'],
         'user_list': ['rest_framework.permissions.IsAuthenticated'], },
     'HIDE_USERS': False,
+    'PASSWORD_RESET_CONFIRM_URL': 'reset-confirmation/{uid}/{token}/',
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': 'True',
 }
 
 CORS_URLS_REGEX = r'^/api/.*$'
@@ -178,12 +180,12 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
 ]
 
-# EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 
 EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
 SERVER_EMAIL = 'from@example.com'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.getenv('EMAIL_HOST')
 EMAIL_USE_TLS = False
 EMAIL_PORT = 465
@@ -198,3 +200,4 @@ MAX_EMAIL_LEN = 50
 MAX_USER_LEN = 50
 
 CHAT_SECRET_KEY_LENGTH = 20
+

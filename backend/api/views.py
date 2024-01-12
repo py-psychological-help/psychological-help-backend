@@ -148,7 +148,7 @@ def activate_chat(request, chat_id):
         chat.psychologist = request.user
         chat.save()
         return Response(status=status.HTTP_201_CREATED)
-    return Response("У этого чата уже есть Психолог",
+    return Response("У этого чата уже есть Психолог. Письмо направлено",
                     status=status.HTTP_400_BAD_REQUEST)
 
 
