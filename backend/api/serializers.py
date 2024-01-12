@@ -7,6 +7,7 @@ from django.core.files.base import ContentFile
 from rest_framework import serializers
 
 from users.models import Education, CustomClientUser
+from chats.models import Chat, Message
 
 User = get_user_model()
 
@@ -118,5 +119,60 @@ class CustomClientUserSerializer(serializers.ModelSerializer):
         fields = ('id',
                   'email',
                   'first_name',
-                  'last_name',)
+                  'last_name',
+                  'complaint',
+                  )
         read_only_fields = ('id',)
+
+class MessageSerializer(serializers.ModelSerializer):
+    is_author_me = serializers.SerializerMethodField()
+    author = serializers.SerializerMethodField()
+
+    class Meta:
+        fields = (
+            'id',
+            'text',
+            'date_time',
+            'is_author_me',
+            'author'
+            )
+        read_only_fields = (
+            'id',
+            'date_time',
+            'is_author_me',
+            'author'
+            )
+        model = Message
+
+    def get_is_author_me(self, message):
+        request_user = self.context.get('request').user
+        if request_user.is_anonymous:
+            return not message.is_psy_author
+        author = None
+        if message.is_psy_author:
+            author = message.chat.psychologist
+        return author == request_user
+
+    def get_author(self, message):
+        if message.is_psy_author:
+            return str(message.chat.psychologist)
+        return str(message.chat.client)
+
+
+class ChatSerializer(serializers.ModelSerializer):
+    client = CustomClientUserSerializer(many=False)
+    messages = MessageSerializer(many=True)
+    new = serializers.SerializerMethodField()
+
+    class Meta:
+        fields = (
+            'id',
+            'is_finished',
+            'new',
+            'client',
+            'messages'
+            )
+        model = Chat
+
+    def get_new(self, chat):
+        return chat.psychologist is None

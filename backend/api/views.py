@@ -1,15 +1,20 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from rest_framework import mixins, viewsets
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import (AllowAny, IsAuthenticated,)
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
+from django.core.exceptions import PermissionDenied
 
 from core.utils import get_confirmation_code
+from core.emails import send_chat_url
 from users.models import CustomClientUser, Education
 from .serializers import (UserSerializer, CustomClientUserSerializer,
-                          EducationSerializer)
+                          EducationSerializer, ChatSerializer,
+                          MessageSerializer)
+from chats.models import Chat, Message
 
 User = get_user_model()
 
@@ -96,3 +101,64 @@ class EducationViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class ChatViewSet(viewsets.ModelViewSet):
+    queryset = Chat.objects.all()
+    serializer_class = ChatSerializer
+    #permission_classes = (AuthorOrReadOnly,)
+    http_method_names = ['get', 'delete']
+    pagination_class = None
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+
+class MessageViewSet(viewsets.ModelViewSet):
+    serializer_class = MessageSerializer
+    # permission_classes = (AuthorOrReadOnly,)
+    permission_classes = (AllowAny,)
+
+    def get_queryset(self):
+        chat_id = self.kwargs.get('chat_id')
+        chat = get_object_or_404(Chat, pk=chat_id)
+        return chat.messages.all()
+
+    def perform_create(self, serializer):
+        chat_id = self.kwargs.get('chat_id')
+        author = self.request.user
+        chat = get_object_or_404(Chat, pk=chat_id)
+        if author.is_anonymous:
+            serializer.save(is_psy_author=False, chat=chat)
+            return
+        if author != chat.psychologist:
+            raise PermissionDenied("Нельзя писать за другого психолога!")
+        serializer.save(is_psy_author=True, chat=chat)
+
+    def perform_destroy(self, instance):
+        return super().perform_destroy(instance)
+    
+
+@api_view(['POST', ])
+@permission_classes((IsAuthenticated, ))
+def activate_chat(request, chat_id):
+    chat = get_object_or_404(Chat, id=chat_id)
+    send_chat_url(chat)
+    if chat.psychologist is None:
+        chat.psychologist = request.user
+        chat.save()
+        return Response(status=status.HTTP_201_CREATED)
+    return Response("У этого чата уже есть Психолог",
+                    status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST', ])
+@permission_classes((IsAuthenticated, ))
+def finish_chat(request, chat_id):
+    chat = get_object_or_404(Chat, id=chat_id)
+    if chat.psychologist == request.user:
+        chat.is_finished = True
+        chat.save()
+        return Response(status=status.HTTP_201_CREATED)
+    return Response("Вы не можете завершить чужой чат",
+                    status=status.HTTP_403_FORBIDDEN)

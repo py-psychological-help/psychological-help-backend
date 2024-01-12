@@ -10,6 +10,8 @@ from .validators import year_validator, birthday_validator
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     """Класс пользователей."""
 
+    prefix = 'p'
+
     class Role(models.TextChoices):
         """Роли пользователей."""
 
@@ -60,7 +62,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
     def __str__(self):
-        return str(self.email)
+        return self.prefix + str(self.id)
 
 
 class Education(models.Model):
@@ -98,7 +100,7 @@ class Education(models.Model):
 
 class CustomClientUser(AbstractBaseUser):
     """Класс пользователей."""
-
+    prefix = 'c'
     password = models.CharField('password', max_length=128, blank=True)
 
     first_name = models.CharField(
@@ -131,6 +133,7 @@ class CustomClientUser(AbstractBaseUser):
     date_joined = models.DateTimeField(default=timezone.now)
 
     objects = CustomUserManager()
+    complaint = models.TextField(blank=True)
 
     def __str__(self):
-        return str(self.email)
+        return self.prefix + str(self.id)
