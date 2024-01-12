@@ -470,36 +470,7 @@ paths:
       tags:
       - api
 
-    post:
-      operationId: sendMessage
-      description: 'Send message to chat.'
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Message'
-          description: ''
-        '400':
-            description: Bad request.
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    text:
-                      type: string
-                      format: string
-                      example: Обязательное поле.
-        '403':
-            description: Forbidden.
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/Forbidden'
-      tags:
-      - api
-
+    
     delete:
       operationId: destroyChat
       description: 'Delete chat by chat_secret_key.'
@@ -594,8 +565,45 @@ paths:
                   $ref: '#/components/schemas/Not_Found'
       tags:
       - api
+  /chats/{chat_secret_key}/messages/:
+    parameters:
+      - name: chat_secret_key
+        required: true
+        in: path
+        description: A chat secret key.
+        schema:
+          type: string
+    post:
+      operationId: sendMessage
+      description: 'Send message to chat.'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: ''
+        '400':
+            description: Bad request.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    text:
+                      type: string
+                      format: string
+                      example: Обязательное поле.
+        '403':
+            description: Forbidden.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Forbidden'
+      tags:
+      - api
 
-  /users/reset_password/:
+  /users/psychologists/reset_password/:
     post:
       operationId: resetPasswordUser
       description: 'Reset password if lose.'
@@ -626,7 +634,7 @@ paths:
                   $ref: '#/components/schemas/Unauthorized'
       tags:
       - api
-  /users/reset_password_confirm/:
+  /users/psychologists/reset_password_confirm/:
     post:
       operationId: resetPasswordConfirmUser
       description: 'Confirm password reseting by email-code.'
