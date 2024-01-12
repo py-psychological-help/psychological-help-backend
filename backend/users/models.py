@@ -99,29 +99,27 @@ class Education(models.Model):
 
 
 class CustomClientUser(AbstractBaseUser):
-    """Класс пользователей."""
+    """Модель клиентов."""
+
     prefix = 'c'
     password = models.CharField('password', max_length=128, blank=True)
 
     first_name = models.CharField(
         max_length=150,
         blank=True,
-        verbose_name='Имя'
-    )
+        verbose_name='Имя')
+
     last_name = models.CharField(
         max_length=150,
         blank=True,
-        verbose_name='Фамилия'
-    )
+        verbose_name='Фамилия')
+
     patronymic = models.CharField(
         max_length=150,
         blank=True,
-        verbose_name='Отчество'
-    )
+        verbose_name='Отчество')
 
-    photo = models.ImageField(
-        upload_to='photos/', blank=True
-    )
+    photo = models.ImageField(upload_to='photos/', blank=True)
     email = models.EmailField('email адрес', blank=False, unique=True)
     birth_date = models.DateField(blank=True,
                                   null=True,

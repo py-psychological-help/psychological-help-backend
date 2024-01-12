@@ -113,6 +113,7 @@ class UserCreateSerializer(UserSerializer):
 
 
 class CustomClientUserSerializer(serializers.ModelSerializer):
+    """Сериализатор клиентов."""
 
     class Meta:
         model = CustomClientUser
@@ -124,7 +125,10 @@ class CustomClientUserSerializer(serializers.ModelSerializer):
                   )
         read_only_fields = ('id',)
 
+
 class MessageSerializer(serializers.ModelSerializer):
+    """Сериализатор сообщений."""
+
     is_author_me = serializers.SerializerMethodField()
     author = serializers.SerializerMethodField()
 
@@ -134,14 +138,12 @@ class MessageSerializer(serializers.ModelSerializer):
             'text',
             'date_time',
             'is_author_me',
-            'author'
-            )
+            'author')
         read_only_fields = (
             'id',
             'date_time',
             'is_author_me',
-            'author'
-            )
+            'author')
         model = Message
 
     def get_is_author_me(self, message):
@@ -160,6 +162,8 @@ class MessageSerializer(serializers.ModelSerializer):
 
 
 class ChatSerializer(serializers.ModelSerializer):
+    """Сериализатор чатов."""
+
     client = CustomClientUserSerializer(many=False)
     messages = MessageSerializer(many=True)
     new = serializers.SerializerMethodField()
@@ -170,8 +174,7 @@ class ChatSerializer(serializers.ModelSerializer):
             'is_finished',
             'new',
             'client',
-            'messages'
-            )
+            'messages')
         model = Chat
 
     def get_new(self, chat):

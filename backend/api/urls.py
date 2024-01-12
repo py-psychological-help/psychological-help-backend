@@ -8,29 +8,26 @@ from .views import (UserMe, CustomClientUserViewSet, EducationViewSet,
 router = DefaultRouter()
 
 router.register('users/psychologists',
-                      UserViewSet,
-                      basename='psychologists',)
+                UserViewSet,
+                basename='psychologists',)
 
 router.register('users/clients',
-                      CustomClientUserViewSet,
-                      basename='clients',)
+                CustomClientUserViewSet,
+                basename='clients',)
 
 router.register(r'users/psychologists/me/education',
-                      EducationViewSet,
-                      basename='education',)
+                EducationViewSet,
+                basename='education',)
 
 router.register(r'chats/(?P<chat_id>\d+)/messages',
-    MessageViewSet,
-    basename='message'
-)
+                MessageViewSet,
+                basename='message')
 router.register('chats',
                 ChatViewSet,
-                basename='chats'
-)
+                basename='chats')
 router.register('chats',
                 ChatViewSet,
-                basename='chats'
-)
+                basename='chats')
 
 urlpatterns = [
     path('users/psychologists/me/', UserMe.as_view()),

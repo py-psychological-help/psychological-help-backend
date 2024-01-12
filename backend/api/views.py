@@ -106,7 +106,6 @@ class EducationViewSet(viewsets.ModelViewSet):
 class ChatViewSet(viewsets.ModelViewSet):
     queryset = Chat.objects.all()
     serializer_class = ChatSerializer
-    #permission_classes = (AuthorOrReadOnly,)
     http_method_names = ['get', 'delete']
     pagination_class = None
 
@@ -137,11 +136,12 @@ class MessageViewSet(viewsets.ModelViewSet):
 
     def perform_destroy(self, instance):
         return super().perform_destroy(instance)
-    
+
 
 @api_view(['POST', ])
 @permission_classes((IsAuthenticated, ))
 def activate_chat(request, chat_id):
+    """Привязывает психолога к чату и отправляет клиенту email."""
     chat = get_object_or_404(Chat, id=chat_id)
     send_chat_url(chat)
     if chat.psychologist is None:
@@ -155,6 +155,7 @@ def activate_chat(request, chat_id):
 @api_view(['POST', ])
 @permission_classes((IsAuthenticated, ))
 def finish_chat(request, chat_id):
+    """Меняет статус чата на Завершенный."""
     chat = get_object_or_404(Chat, id=chat_id)
     if chat.psychologist == request.user:
         chat.is_finished = True
