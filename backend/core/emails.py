@@ -28,8 +28,10 @@ def send_education_confirm(user):
               [user.email])
 
 
-def send_chat_url(user, chat_url):
+def send_chat_url(chat):
     """Оправка клиенту ссылки на чат."""
+    user = chat.client
+    chat_url = f'http://letstalk.ddns.net/chats/{chat.id}/'
     send_mail('mail/chat_url.html',
               {'user': user,
                'chat_url': chat_url
