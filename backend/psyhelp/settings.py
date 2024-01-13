@@ -1,6 +1,10 @@
 import os
-from dotenv import load_dotenv
 from pathlib import Path
+from dotenv import load_dotenv
+import redis
+
+REDIS = redis.Redis(host="localhost", port=6379, db=0, decode_responses=True)
+
 
 load_dotenv()
 

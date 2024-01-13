@@ -58,11 +58,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(default=timezone.now)
     confirmation_code = models.CharField(max_length=5, blank=True)
+    greeting = models.TextField(blank=True)
 
     objects = CustomUserManager()
 
     def __str__(self):
-        return self.prefix + str(self.id)
+        return str(self.first_name + self.last_name)
 
 
 class Education(models.Model):
@@ -101,6 +102,7 @@ class Education(models.Model):
 class CustomClientUser(AbstractBaseUser):
     """Модель клиентов."""
 
+    id = models.AutoField(primary_key=True)
     prefix = 'c'
     password = models.CharField('password', max_length=128, blank=True)
 

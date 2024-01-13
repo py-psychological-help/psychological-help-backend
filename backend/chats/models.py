@@ -22,7 +22,8 @@ class Chat(models.Model):
     date_time = models.DateTimeField("Дата создания",
                                      auto_now_add=True,
                                      db_index=True)
-    is_finished = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)
+    chat_secret_key = models.CharField(max_length=50, blank=True)
 
     def __str__(self):
         return str(str(self.client) + str(self.psychologist))

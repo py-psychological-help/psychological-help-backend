@@ -19,7 +19,7 @@ router.register(r'users/psychologists/me/education',
                 EducationViewSet,
                 basename='education',)
 
-router.register(r'chats/(?P<chat_id>\d+)/messages',
+router.register(r'chats/(?P<chat_secret_key>[a-zA-Z0-9]+)/messages',
                 MessageViewSet,
                 basename='message')
 router.register('chats',
@@ -31,10 +31,15 @@ router.register('chats',
 
 urlpatterns = [
     path('users/psychologists/me/', UserMe.as_view()),
-    path('chats/<int:chat_id>/start/', activate_chat, name='start_chat'),
-    path('chats/<int:chat_id>/finish/', finish_chat, name='finish_chat'),
+    path('chats/<str:chat_secret_key>/start/',
+         activate_chat,
+         name='start_chat'),
+    path('chats/<str:chat_secret_key>/finish/',
+         finish_chat,
+         name='finish_chat'),
     path('', include(router.urls),),
-    path('auth/', include('djoser.urls.authtoken')),
+    path('auth/',
+         include('djoser.urls.authtoken')),
     path('users/psychologists/', UserViewSet.as_view({'get': 'list',
                                                       'post': 'create'}),),
 
