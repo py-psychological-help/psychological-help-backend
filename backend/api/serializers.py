@@ -179,8 +179,8 @@ class MessageSerializer(serializers.ModelSerializer):
 
     def get_author(self, message):
         if message.is_psy_author:
-            return str(message.chat.psychologist)
-        return str(message.chat.client)
+            return message.chat.psychologist.id
+        return message.chat.client.id
 
 
 class ChatSerializer(serializers.ModelSerializer):
