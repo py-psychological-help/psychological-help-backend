@@ -7,7 +7,7 @@ from .models import Chat, Message
 class ChatAdmin(admin.ModelAdmin):
     list_display = ('id',
                     'client', 'psychologist',
-                    'active', 
+                    'active',
                     'chat_secret_key')
 
 
