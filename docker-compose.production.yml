@@ -15,14 +15,6 @@ services:
     restart: always
     volumes:
       - pg_data_production:/var/lib/postgresql/data/
-  backend:
-    image: sergeyxx/psyhelp_backend
-    env_file: .env
-    restart: always
-    volumes:
-      - static_volume:/backend_static/
-      - media_volume:/media/
-      - data_volume:/data/
   redis-stack:
     image: redis/redis-stack-server:latest
     ports:
@@ -30,6 +22,17 @@ services:
       - 8001:8001
     volumes:
       - redis_data:/local-data/
+  backend:
+    image: sergeyxx/psyhelp_backend
+    env_file: .env
+    depends_on:
+      - db
+      - redis-stack
+    restart: always
+    volumes:
+      - static_volume:/backend_static/
+      - media_volume:/media/
+      - data_volume:/data/
   gateway:
     image: sergeyxx/psyhelp_gateway
     env_file: .env
