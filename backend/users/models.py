@@ -58,6 +58,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(default=timezone.now)
     confirmation_code = models.CharField(max_length=5, blank=True)
+    greeting = models.TextField(blank=True)
 
     objects = CustomUserManager()
 

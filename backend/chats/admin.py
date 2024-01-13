@@ -7,7 +7,7 @@ from .models import Chat, Message
 class ChatAdmin(admin.ModelAdmin):
     list_display = ('id',
                     'client', 'psychologist',
-                    'is_finished')
+                    'active')
 
 
 @admin.register(Message)

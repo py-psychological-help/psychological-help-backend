@@ -49,7 +49,7 @@ class UserMe(APIView):
     """Вьюсет для своей страницы."""
 
     permission_classes = (IsAuthenticated,)
-    http_method_names = ['get', 'post', 'put', 'patch']
+    http_method_names = ['get', 'post', 'put', 'patch', 'delete']
 
     def get(self, request):
         serializer = UserSerializer(request.user)
@@ -68,6 +68,11 @@ class UserMe(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return self.get(request)
+    
+    def delete(self, request, *args, **kwargs):
+        request.user.delete()
+        return Response("Ваш профиль удален.",
+                        status=status.HTTP_204_NO_CONTENT)
 
 
 class CustomClientUserViewSet(viewsets.ModelViewSet):
@@ -117,6 +122,7 @@ class MessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
     # permission_classes = (AuthorOrReadOnly,)
     permission_classes = (AllowAny,)
+    pagination_class = None
 
     def get_queryset(self):
         chat_id = self.kwargs.get('chat_id')

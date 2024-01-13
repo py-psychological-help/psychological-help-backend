@@ -58,7 +58,29 @@ class UserSerializer(serializers.ModelSerializer):
                   'education',
                   'approved'
                   )
-        read_only_fields = ('approved',)
+        read_only_fields = ('approved', 'email',)
+        model = User
+
+
+class UserChatSerializer(serializers.ModelSerializer):
+    """Сериализатор отображения Пользователей."""
+
+    photo = Base64ImageField(required=False, allow_null=True)
+
+    class Meta:
+        fields = (
+                  'first_name',
+                  'last_name',
+                  'birth_date',
+                  'photo',
+                  'greeting'
+                  )
+        read_only_fields = (
+                  'first_name',
+                  'last_name',
+                  'birth_date',
+                  'photo',
+                  )
         model = User
 
 
@@ -165,15 +187,17 @@ class ChatSerializer(serializers.ModelSerializer):
     """Сериализатор чатов."""
 
     client = CustomClientUserSerializer(many=False)
+    psychologist = UserChatSerializer(many=False)
     messages = MessageSerializer(many=True)
     new = serializers.SerializerMethodField()
 
     class Meta:
         fields = (
             'id',
-            'is_finished',
+            'active',
             'new',
             'client',
+            'psychologist',
             'messages')
         model = Chat
 

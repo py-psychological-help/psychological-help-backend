@@ -22,7 +22,7 @@ class Chat(models.Model):
     date_time = models.DateTimeField("Дата создания",
                                      auto_now_add=True,
                                      db_index=True)
-    is_finished = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)
 
     def __str__(self):
         return str(str(self.client) + str(self.psychologist))

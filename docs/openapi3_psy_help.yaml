@@ -218,6 +218,15 @@ paths:
                   $ref: '#/components/schemas/Not_Found'
       tags:
       - api
+    delete:
+      operationId: deletePsychologist
+      description: 'Psychologist delete.'
+      parameters: []
+      responses:
+        '204':
+          description: '"Ваш профиль удален."'
+      tags:
+      - api
 
   /users/psychologists/me/education/:
     get:
@@ -573,6 +582,19 @@ paths:
         description: A chat secret key.
         schema:
           type: string
+    get:
+      operationId: listMessages
+      description: 'Get message list.'
+      parameters: []
+      responses:
+        '200':
+          content:
+            array:
+              schema:
+                $ref: '#/components/schemas/Messages'
+          description: ''
+      tags:
+      - api
     post:
       operationId: sendMessage
       description: 'Send message to chat.'
@@ -858,18 +880,6 @@ components:
     Chat:
       type: object
       properties:
-        client:
-          type: object
-          properties:
-            complaint:
-              type: string
-              format: string
-            text:
-              type: string
-              format: string
-            first_name:
-              type: string
-              readOnly: true
         id:
           type: integer
           format: integer
@@ -887,6 +897,30 @@ components:
           type: boolean
           format: boolian
           readOnly: true
+        client:
+          type: object
+          properties:
+            complaint:
+              type: string
+              format: string
+            text:
+              type: string
+              format: string
+            first_name:
+              type: string
+              readOnly: true
+        psychologist:
+          type: object
+          properties:
+            complaint:
+              type: string
+              format: string
+            text:
+              type: string
+              format: string
+            first_name:
+              type: string
+              readOnly: true
         messages:
           type: array
           readOnly: true
@@ -896,7 +930,7 @@ components:
               id:
                 type: integer
                 readOnly: true
-              date:
+              date_time:
                 type: string
               text:
                 type: string
@@ -918,6 +952,26 @@ components:
           format: string
       required:
       - text
+    
+    Messages:
+      type: array
+      readOnly: true
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+            readOnly: true
+          date_time:
+            type: string
+          text:
+            type: string
+          is_author_me:
+            type: boolean
+            example: true
+          author:
+            type: string
+            example: p1
 
     SendEmailReset:
       type: object
