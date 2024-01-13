@@ -98,7 +98,7 @@ jobs:
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
-        key: ${{ secrets.SSH_KEY }}
+        password: ${{ secrets.PASSWORD }}
         source: "docker-compose.production.yml"
         target: "psyhelp"
     - name: Executing remote ssh commands to deploy
@@ -106,7 +106,7 @@ jobs:
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
-        key: ${{ secrets.SSH_KEY }}
+        password: ${{ secrets.PASSWORD }}
         script: |
           cd psyhelp
           # Выполняет pull образов с Docker Hub
@@ -128,4 +128,4 @@ jobs:
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
-        message: Деплой PsyHelp успешно выполнен!
+        message: Деплой Psyhelp успешно выполнен!
