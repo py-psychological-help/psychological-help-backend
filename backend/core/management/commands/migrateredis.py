@@ -7,7 +7,6 @@ from chats.models import Chat
 User = get_user_model()
 
 
-
 class Command(BaseCommand):
     """Команда для тестов и отладки."""
 

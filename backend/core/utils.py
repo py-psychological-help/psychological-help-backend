@@ -18,13 +18,14 @@ def create_secret_key(chat):
             chat_secret_key += random.choice(later)
         if not r.get(chat_secret_key):
             r.set(chat_secret_key, chat.id)
-            chat.chat_secret_key = chat_secret_key # нужно только для отладки
+            chat.chat_secret_key = chat_secret_key
             chat.save()
             print(chat_secret_key)
             return chat_secret_key
 
 
 def get_chat_id(chat_secret_key):
+    """Получает chat_id по secret_key."""
     r = settings.REDIS
     return r.get(chat_secret_key)
 

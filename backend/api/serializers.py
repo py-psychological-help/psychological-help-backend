@@ -68,19 +68,15 @@ class UserChatSerializer(serializers.ModelSerializer):
     photo = Base64ImageField(required=False, allow_null=True)
 
     class Meta:
-        fields = (
-                  'first_name',
+        fields = ('first_name',
                   'last_name',
                   'birth_date',
                   'photo',
-                  'greeting'
-                  )
-        read_only_fields = (
-                  'first_name',
-                  'last_name',
-                  'birth_date',
-                  'photo',
-                  )
+                  'greeting')
+        read_only_fields = ('first_name',
+                            'last_name',
+                            'birth_date',
+                            'photo',)
         model = User
 
 

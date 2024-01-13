@@ -69,7 +69,7 @@ class UserMe(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return self.get(request)
-    
+
     def delete(self, request, *args, **kwargs):
         request.user.delete()
         return Response("Ваш профиль удален.",
@@ -85,7 +85,7 @@ class CustomClientUserViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         # тут будет создание чата
         return super().perform_create(serializer)
-    
+
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -96,7 +96,9 @@ class CustomClientUserViewSet(viewsets.ModelViewSet):
         client = get_object_or_404(CustomClientUser, email=email)
         chat = Chat.objects.create(client=client)
         create_secret_key(chat)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        return Response(serializer.data,
+                        status=status.HTTP_201_CREATED,
+                        headers=headers)
 
 
 class EducationViewSet(viewsets.ModelViewSet):

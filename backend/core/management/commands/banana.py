@@ -18,8 +18,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         r = settings.REDIS
-        # r.set("django-insecure-%x%lg4mv5ud25q@9v*&sq3k7&usb8ya@#i12+o*2+t+e31$4t5", "id 161654484")
-        # res = r.get("django-insecure-%x%lg4mv5ud25q@9v*&sq3k7&usb8ya@#i12+o*2+t+e31$4t5")
         secret_key = create_secret_key()
         chat = Chat.objects.last()
         r.set(secret_key, chat.id)
