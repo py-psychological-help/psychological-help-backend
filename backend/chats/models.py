@@ -23,6 +23,7 @@ class Chat(models.Model):
                                      auto_now_add=True,
                                      db_index=True)
     active = models.BooleanField(default=True)
+    chat_secret_key = models.CharField(max_length=50, blank=True)
 
     def __str__(self):
         return str(str(self.client) + str(self.psychologist))
