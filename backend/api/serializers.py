@@ -194,11 +194,12 @@ class ChatSerializer(serializers.ModelSerializer):
     class Meta:
         fields = (
             'id',
+            'chat_secret_key',
             'active',
             'new',
             'client',
             'psychologist',
-            'messages')
+            'messages',)
         model = Chat
 
     def get_new(self, chat):

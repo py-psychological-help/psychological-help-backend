@@ -1,6 +1,7 @@
 from mail_templated import send_mail
 
 from django.conf import settings
+from .utils import create_secret_key
 
 
 def send_confirmation_code(user, confirmation_code):
@@ -31,7 +32,8 @@ def send_education_confirm(user):
 def send_chat_url(chat):
     """Оправка клиенту ссылки на чат."""
     user = chat.client
-    chat_url = f'http://letstalk.ddns.net/chats/{chat.id}/'
+    chat_secret_key = chat.chat_secret_key
+    chat_url = f'http://letstalk.ddns.net/chats/{chat_secret_key}/'
     send_mail('mail/chat_url.html',
               {'user': user,
                'chat_url': chat_url

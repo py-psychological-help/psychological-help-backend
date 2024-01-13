@@ -102,7 +102,7 @@ class Education(models.Model):
 class CustomClientUser(AbstractBaseUser):
     """Модель клиентов."""
 
-    id = models.AutoField(primary_key=True, default=1000000)
+    id = models.AutoField(primary_key=True)
     prefix = 'c'
     password = models.CharField('password', max_length=128, blank=True)
 
