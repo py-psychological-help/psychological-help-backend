@@ -7,9 +7,6 @@ load_dotenv()
 REDIS_HOST = os.getenv('REDIS_HOST')
 REDIS = redis.Redis(host=REDIS_HOST, port=6379, db=0, decode_responses=True)
 
-
-
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
