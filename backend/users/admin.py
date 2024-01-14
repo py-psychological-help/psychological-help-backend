@@ -3,20 +3,29 @@ from django.contrib import admin
 from .models import CustomUser, Education, CustomClientUser
 
 
+@admin.register(Education)
+class EducationAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'user', 'scan',
+                    'university', 'faculty',
+                    'specialization', 'year_of_graduation', )
+
+
+class EducationAdminInlineAdmin(admin.TabularInline):
+    """Класс для вывода Сертификатов в User."""
+
+    model = Education
+    fields = ('scan',)
+    # min_num = 0
+
+
 @admin.register(CustomUser)
 class UserAdmin(admin.ModelAdmin):
+    inlines = (EducationAdminInlineAdmin,)
     list_display = ('pk', 'email',
                     'first_name', 'last_name',
                     'approved_by_moderator', 'role', 'birth_date')
     list_filter = ('email', 'approved_by_moderator')
     search_fields = ('email',)
-
-
-@admin.register(Education)
-class EducationAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'user',
-                    'university', 'faculty',
-                    'specialization', 'year_of_graduation')
 
 
 @admin.register(CustomClientUser)
