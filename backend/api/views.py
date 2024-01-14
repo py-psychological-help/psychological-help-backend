@@ -86,7 +86,6 @@ class CustomClientUserViewSet(viewsets.ModelViewSet):
     permission_classes = (AllowAny,)
 
     def perform_create(self, serializer):
-        # тут будет создание чата
         return super().perform_create(serializer)
 
     def create(self, request, *args, **kwargs):
