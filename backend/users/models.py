@@ -1,3 +1,5 @@
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
@@ -5,6 +7,7 @@ from django.utils import timezone
 
 from .managers import CustomUserManager
 from .validators import year_validator, birthday_validator
+from core.emails import send_education_confirm
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
@@ -63,7 +66,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
     def __str__(self):
-        return str(self.first_name + self.last_name)
+        return str(self.first_name + ' ' + self.last_name)
 
 
 class Education(models.Model):
@@ -138,3 +141,10 @@ class CustomClientUser(AbstractBaseUser):
 
     def __str__(self):
         return self.prefix + str(self.id)
+
+
+@receiver(post_save, sender=CustomUser)
+def approve_education(sender, instance, created, **kwargs):
+    """Отправляет уведомление о проверке документов. Требует улучшения."""
+    if instance.approved_by_moderator:
+        send_education_confirm(instance)
