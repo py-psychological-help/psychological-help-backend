@@ -5,9 +5,11 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.utils import timezone
 
+from core.emails import (send_education_confirm,
+                         send_reg_confirm,
+                         send_client_reg_confirm)
 from .managers import CustomUserManager
 from .validators import year_validator, birthday_validator
-from core.emails import send_education_confirm
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
@@ -50,6 +52,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
                                   null=True,
                                   validators=[birthday_validator, ])
     approved_by_moderator = models.BooleanField(blank=False, default=False)
+    is_reg_confirm_sent = models.BooleanField(default=False)
+    is_approve_sent = models.BooleanField(default=False)
 
     USERNAME_FIELD = "email"
 
@@ -134,6 +138,7 @@ class CustomClientUser(AbstractBaseUser):
     USERNAME_FIELD = "email"
 
     is_active = models.BooleanField(default=True)
+    is_reg_confirm_sent = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
 
     objects = CustomUserManager()
@@ -144,7 +149,23 @@ class CustomClientUser(AbstractBaseUser):
 
 
 @receiver(post_save, sender=CustomUser)
-def approve_education(sender, instance, created, **kwargs):
-    """Отправляет уведомление о проверке документов. Требует улучшения."""
-    if instance.approved_by_moderator:
+def psychologist_notification(sender, instance, created, **kwargs):
+    """Отправляет уведомления о регистрации и проверке документов."""
+    if instance.approved_by_moderator and not instance.is_approve_sent:
         send_education_confirm(instance)
+        instance.is_approve_sent = True
+        instance.save()
+
+    if not instance.is_reg_confirm_sent:
+        send_reg_confirm(instance)
+        instance.is_reg_confirm_sent = True
+        instance.save()
+
+
+@receiver(post_save, sender=CustomClientUser)
+def client_notification(sender, instance, created, **kwargs):
+    """Отправляет уведомление о успешной регистрации."""
+    if not instance.is_reg_confirm_sent:
+        send_client_reg_confirm(instance)
+        instance.is_reg_confirm_sent = True
+        instance.save()
