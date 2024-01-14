@@ -402,6 +402,15 @@ paths:
             format: string
             minimum: 1
           description: Boolean parametr to filter new chats
+        - in: path
+          name: is_mine
+          required: true
+          schema:
+            type: boolean
+            format: string
+            minimum: 1
+          description: Boolean parametr to filter only owned chats
+          example: '/chats/?is_mine=true&active=false&new=false'
       responses:
         '200':
           content:
