@@ -23,7 +23,8 @@ ALLOWED_HOSTS = ['127.0.0.1',
                  '0.0.0.0',
                  'localhost',
                  os.getenv('SERVER_IP'),
-                 os.getenv('DOMAIN_NAME')
+                 os.getenv('TEST_DOMAIN_NAME'),
+                 os.getenv('PROD_DOMAIN_NAME'),  # прод всегда последний!
                  ]
 
 # Application definition

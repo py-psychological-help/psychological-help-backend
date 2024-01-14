@@ -13,13 +13,13 @@ class UserAdmin(admin.ModelAdmin):
 
 
 @admin.register(Education)
-class UserAdmin(admin.ModelAdmin):
+class EducationAdmin(admin.ModelAdmin):
     list_display = ('pk', 'user',
                     'university', 'faculty',
                     'specialization', 'year_of_graduation')
 
 
 @admin.register(CustomClientUser)
-class UserAdmin(admin.ModelAdmin):
+class ClienAdmin(admin.ModelAdmin):
     list_display = ('pk', 'email',
                     'first_name', 'last_name', 'birth_date')
