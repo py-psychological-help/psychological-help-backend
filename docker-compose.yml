@@ -32,11 +32,11 @@ services:
       - static_volume:/backend_static/
       - media_volume:/media/
       - data_volume:/data/
-  nginx:
+  gateway:
     build: ./infra/
     env_file: .env
-    ports:
-      - 8011:80
     volumes:
       - static_volume:/staticfiles/
       - media_volume:/media/
+    ports:
+      - 8011:80
