@@ -132,7 +132,7 @@ paths:
                       type: integer
                       format: int64
                       example: Поле обязательно для заполнения!
-                    second_name:
+                    last_name:
                       type: string
                       example: Поле обязательно для заполнения!
                     birth_date:
@@ -161,7 +161,7 @@ paths:
       - api
     patch:
       operationId: partialUpdatePsychologist
-      description: 'Psychologist partial update.Должен слетать аппрув при изменении данных'
+      description: 'Psychologist partial update. Должен слетать аппрув при изменении данных'
       parameters: []
       requestBody:
         content:
@@ -191,7 +191,7 @@ paths:
                     first_name:
                       type: string
                       example: Поле обязательно для заполнения!
-                    second_name:
+                    last_name:
                       type: string
                       example: Поле обязательно для заполнения!
                     birth_date:
@@ -258,9 +258,7 @@ paths:
         content:
           application/json:
             schema:
-              type: array
-              items:
-                  $ref: '#/components/schemas/Education'
+              $ref: '#/components/schemas/Education'
           
       responses:
         '201':
@@ -386,30 +384,24 @@ paths:
       operationId: listChats
       description: 'Get chats list. Ayth only, for Psychologists.'
       parameters:
-        - in: path
+        - in: query
           name: active
-          required: true
+          required: false
           schema:
             type: boolean
-            format: string
-            minimum: 1
-          description: Boolean parametr to filter active chats
-        - in: path
+          description: Boolean parameter to filter active chats
+        - in: query
           name: new
-          required: true
+          required: false
           schema:
             type: boolean
-            format: string
-            minimum: 1
-          description: Boolean parametr to filter new chats
-        - in: path
+          description: Boolean parameter to filter new chats
+        - in: query
           name: is_mine
-          required: true
+          required: false
           schema:
             type: boolean
-            format: string
-            minimum: 1
-          description: Boolean parametr to filter only owned chats
+          description: Boolean parameter to filter only owned chats
           example: '/chats/?is_mine=true&active=false&new=false'
       responses:
         '200':
@@ -622,8 +614,6 @@ paths:
                   type: object
                   properties:
                     text:
-                      type: string
-                      format: string
                       example: Обязательное поле.
         '403':
             description: Forbidden.
@@ -801,7 +791,7 @@ components:
           readOnly: true
         first_name:
           type: string
-        second_name:
+        last_name:
           type: string
         birth_date:
           type: string
@@ -812,7 +802,7 @@ components:
           type: string
       required:
       - first_name
-      - second_name
+      - last_name
       - birth_date
 
     Education:
