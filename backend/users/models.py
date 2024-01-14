@@ -92,7 +92,8 @@ class Education(models.Model):
     )
     year_of_graduation = models.IntegerField('Год окончания',
                                              validators=[year_validator, ],
-                                             blank=True)
+                                             blank=True,
+                                             null=True)
 
     scan = models.ImageField(
         upload_to='scans', blank=False
