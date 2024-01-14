@@ -5,11 +5,7 @@ from chats.models import Chat
 
 
 class ChatFilter(django_filters.FilterSet):
-    """
-    Фильтр для запросов к объектам модели Chat.
-
-    Фильтрация осуществляется по active, new.
-    """
+    """Фильтр для запросов к объектам модели Chat по active, new."""
 
     active = BooleanFilter(field_name='active')
     new = BooleanFilter(field_name='new', method='filter_is_new')
