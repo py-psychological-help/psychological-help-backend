@@ -32,6 +32,8 @@ services:
       - static_volume:/backend_static/
       - media_volume:/media/
       - data_volume:/data/
+    ports:
+      - 8012:80
   gateway:
     build: ./infra/
     env_file: .env

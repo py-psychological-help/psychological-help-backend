@@ -195,7 +195,6 @@ def activate_chat(request, chat_secret_key):
 def finish_chat(request, chat_secret_key):
     """Меняет статус чата на Завершенный."""
     chat_id = get_chat_id(chat_secret_key)
-    print(chat_id)
     chat = get_object_or_404(Chat, id=chat_id)
     if chat.psychologist == request.user:
         chat.active = False

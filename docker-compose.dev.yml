@@ -1,0 +1,19 @@
+
+version: '3'
+
+volumes:
+  static_volume:
+  media_volume:
+  data_volume:
+
+services:
+  backend:
+    image: sergeyxx/psyhelp_backend_dev
+    env_file: .env
+    restart: always
+    volumes:
+      - static_volume:/backend_static/
+      - media_volume:/media/
+      - data_volume:/data/
+    ports:
+      - 8022:8022

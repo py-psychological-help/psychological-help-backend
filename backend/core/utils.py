@@ -20,7 +20,6 @@ def create_secret_key(chat):
             r.set(chat_secret_key, chat.id)
             chat.chat_secret_key = chat_secret_key
             chat.save()
-            print(chat_secret_key)
             return chat_secret_key
 
 
