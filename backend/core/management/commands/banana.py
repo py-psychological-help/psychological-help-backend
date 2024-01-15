@@ -22,6 +22,4 @@ class Command(BaseCommand):
         chat = Chat.objects.last()
         r.set(secret_key, chat.id)
         res = r.get(secret_key)
-        print(secret_key)
-        print(res)
         send_chat_url(chat)
