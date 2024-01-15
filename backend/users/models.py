@@ -72,7 +72,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return str(self.first_name + ' ' + self.last_name)
 
-
+user = CustomUser.objects.get(id=1)
 class Education(models.Model):
     """Модель образования."""
 

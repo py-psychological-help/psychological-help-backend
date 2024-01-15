@@ -15,6 +15,8 @@ services:
     restart: always
     volumes:
       - pg_data_production:/var/lib/postgresql/data/
+    ports:
+      - 5432:5432
   redis-stack:
     image: redis/redis-stack-server:latest
     ports:

@@ -4,3 +4,5 @@ db.sqlite3
 .env
 db copy.sqlite3
 collected_static/
+.env.dev
+*.env
