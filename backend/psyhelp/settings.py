@@ -181,6 +181,8 @@ CORS_URLS_REGEX = r'^/api/.*$'
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
+    'https://dpogovorim.ru/',
+    'https://letstalk.ddns.net/'
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
