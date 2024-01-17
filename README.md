@@ -1,12 +1,37 @@
 # psychological-help-backend
 
-Временно не работает доступ по SSH к серверу со стороны GitHub, поэтому для деплоя необходимо
+Настроен workflow для автоматического деплоя на сервер из ветки main. 
 
-1. Запушить изменения в ветку main
-2. Закинуть в папку psyhelp (при необходимости) docker-compose.production.yml
-3. Выполнить в папке psyhelp:
 
+Вручную задеплоить можно следующими командами из папки "psyhelp"
 ```bash
 docker compose -f docker-compose.production.yml down
-docker compose -f docker-compose.production.yml up
+docker compose -f docker-compose.production.yml pull
+docker compose -f docker-compose.production.yml up -d
 ```
+
+Полезные команды:
+
+Залить новые файлы фронта
+В папку "psyhelp" загрузить папку "build". Выполнить команду из папки "psyhelp":
+
+```bash
+sudo docker compose -f docker-compose.production.yml cp build/. gateway:staticfiles
+```
+
+Сделать бэкап БД
+```bash
+pg_dump -U username dbname > db.dump
+sudo docker compose -f docker-compose.production.yml exec pg_dump -U username dbname > db.dump
+sudo docker compose -f docker-compose.production.yml cp db:db.dump db.dump
+```
+
+
+Восстановить БД
+```bash
+pg_dump -U username dbname > db.dump
+sudo docker compose -f docker-compose.production.yml cp db.dump db:.
+sudo docker compose -f docker-compose.production.yml exec pg_restore -U psyhelp_user -f db.dump
+```
+
+
