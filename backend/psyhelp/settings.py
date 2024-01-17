@@ -181,6 +181,10 @@ CORS_URLS_REGEX = r'^/api/.*$'
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
+    'http://' + os.getenv('TEST_DOMAIN_NAME'),
+    'https://' + os.getenv('TEST_DOMAIN_NAME'),
+    'http://' + os.getenv('SERVER_IP'),
+    'https://' + os.getenv('SERVER_IP'),
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
