@@ -21,7 +21,6 @@ sudo docker compose -f docker-compose.production.yml cp build/. gateway:staticfi
 
 Сделать бэкап БД
 ```bash
-pg_dump -U username dbname > db.dump
 sudo docker compose -f docker-compose.production.yml exec pg_dump -U username dbname > db.dump
 sudo docker compose -f docker-compose.production.yml cp db:db.dump db.dump
 ```
