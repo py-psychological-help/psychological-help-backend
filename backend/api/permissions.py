@@ -13,3 +13,15 @@ class IsOwnerOrReadOnly(BasePermission):
             request.method in SAFE_METHODS
             or request.user == obj.author
         )
+
+
+class ApprovedByModerator(BasePermission):
+    def has_permission(self, request, view):
+        if view.action == 'list' and (request.user.is_authenticated
+                                      and request.user.approved_by_moderator):
+            return True
+        elif view.action != 'list' and (request.method in SAFE_METHODS
+                                        or request.user.is_authenticated):
+            return True
+        else:
+            return False

@@ -19,6 +19,7 @@ from .serializers import (UserSerializer, CustomClientUserSerializer,
                           MessageSerializer)
 from chats.models import Chat, Message
 from .filters import ChatFilter
+from .permissions import ApprovedByModerator
 
 User = get_user_model()
 
@@ -126,6 +127,7 @@ class EducationViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
+@permission_classes((ApprovedByModerator, ))
 class ChatViewSet(viewsets.ModelViewSet):
     """Вьюшка просмотра и удаления чата."""
 
