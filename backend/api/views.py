@@ -19,6 +19,7 @@ from .serializers import (UserSerializer, ClienеSerializer,
                           MessageSerializer)
 from chats.models import Chat, Message
 from .filters import ChatFilter
+from .permissions import ApprovedByModerator
 
 User = get_user_model()
 
@@ -106,6 +107,7 @@ class ChatViewSet(viewsets.ModelViewSet):
     serializer_class = ChatSerializer
     http_method_names = ['get', 'delete']
     pagination_class = None
+    permission_classes = (ApprovedByModerator,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = ChatFilter
 
