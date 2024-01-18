@@ -15,7 +15,6 @@ class EducationAdminInlineAdmin(admin.TabularInline):
 
     model = Education
     fields = ('scan',)
-    # min_num = 0
 
 
 @admin.register(CustomUser)

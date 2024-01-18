@@ -19,6 +19,10 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = os.getenv('DEBUG') in ['TRUE', 'true', '1', 'yes']
 
+ANONYMIZE_DATA = (
+    os.getenv('ANONYMIZE_DATA') in ['TRUE', 'True', 'true', '1', 'yes']
+)
+
 ALLOWED_HOSTS = ['127.0.0.1',
                  '0.0.0.0',
                  'localhost',
@@ -206,3 +210,5 @@ MAX_EMAIL_LEN = 50
 MAX_USER_LEN = 50
 
 CHAT_SECRET_KEY_LENGTH = 20
+
+COMPRESS_IMAGE = True

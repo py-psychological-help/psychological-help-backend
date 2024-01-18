@@ -4,8 +4,6 @@ import string
 from django.contrib.auth.tokens import default_token_generator
 from django.conf import settings
 
-# from chat.models import Chat
-
 
 def create_secret_key(chat):
     """Генерирует секретный ключ для чата."""

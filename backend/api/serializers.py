@@ -13,7 +13,7 @@ User = get_user_model()
 
 
 class Base64ImageField(serializers.ImageField):
-    """Сериализатор картинок в HEX."""
+    """Сериализатор картинок в Base64."""
 
     def to_internal_value(self, data):
         if isinstance(data, str) and data.startswith('data:image'):
@@ -26,6 +26,8 @@ class Base64ImageField(serializers.ImageField):
 
 
 class EducationSerializer(serializers.ModelSerializer):
+    """Сериализатор объектов Образования."""
+
     scan = Base64ImageField(required=True, allow_null=False)
 
     class Meta:
@@ -63,7 +65,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserChatSerializer(serializers.ModelSerializer):
-    """Сериализатор отображения Пользователей."""
+    """Вложенный в чат сериализатор пользователей."""
 
     photo = Base64ImageField(required=False, allow_null=True)
 
@@ -130,7 +132,7 @@ class UserCreateSerializer(UserSerializer):
         return super(UserSerializer, self).create(validated_data)
 
 
-class CustomClientUserSerializer(serializers.ModelSerializer):
+class ClienеSerializer(serializers.ModelSerializer):
     """Сериализатор клиентов."""
 
     class Meta:
@@ -182,7 +184,7 @@ class MessageSerializer(serializers.ModelSerializer):
 class ChatSerializer(serializers.ModelSerializer):
     """Сериализатор чатов."""
 
-    client = CustomClientUserSerializer(many=False)
+    client = ClienеSerializer(many=False)
     psychologist = UserChatSerializer(many=False)
     messages = MessageSerializer(many=True)
     new = serializers.SerializerMethodField()
