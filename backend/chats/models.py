@@ -26,7 +26,7 @@ class Chat(models.Model):
     chat_secret_key = models.CharField(max_length=50, blank=True)
 
     def __str__(self):
-        return str(str(self.client) + str(self.psychologist))
+        return str(self.client + ' ' + self.psychologist)
 
 
 class Message(models.Model):

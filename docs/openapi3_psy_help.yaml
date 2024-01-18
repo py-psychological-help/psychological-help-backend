@@ -19,6 +19,7 @@ paths:
           type: integer
       responses:
         '200':
+          description: OK.
           content:
             application/json:
               schema:
@@ -41,7 +42,12 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Psychologist'
-          description: ''
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
       tags:
       - api
     post:

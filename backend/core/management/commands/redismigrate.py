@@ -8,7 +8,7 @@ User = get_user_model()
 
 
 class Command(BaseCommand):
-    """Команда для тестов и отладки."""
+    """Команда импорта в Redis ключей чатов."""
 
     help = 'Import id command.'
 

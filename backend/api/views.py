@@ -14,39 +14,13 @@ from django.core.exceptions import PermissionDenied
 from core.utils import get_confirmation_code, get_chat_id, create_secret_key
 from core.emails import send_chat_url
 from users.models import CustomClientUser, Education
-from .serializers import (UserSerializer, CustomClientUserSerializer,
+from .serializers import (UserSerializer, ClienеSerializer,
                           EducationSerializer, ChatSerializer,
                           MessageSerializer)
 from chats.models import Chat, Message
 from .filters import ChatFilter
 
 User = get_user_model()
-
-
-class UsersViewSet(mixins.UpdateModelMixin,
-                   mixins.DestroyModelMixin,
-                   mixins.CreateModelMixin,
-                   mixins.ListModelMixin,
-                   mixins.RetrieveModelMixin,
-                   viewsets.GenericViewSet):
-    """
-    ViewSet для просмотра пользователей и редактирования
-    данных пользователя.
-    """
-
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    http_method_names = ['get', 'post', 'patch', 'delete']
-    permission_classes = (AllowAny, )
-    lookup_field = 'id'
-
-    def perform_create(self, serializer):
-        serializer.save()
-        user = User.objects.get(username=self.request.data.get('username'))
-        confirmation_code = get_confirmation_code(user)
-        serializer.save(
-            confirmation_code=confirmation_code
-        )
 
 
 class UserMe(APIView):
@@ -80,13 +54,12 @@ class UserMe(APIView):
 
 
 class CustomClientUserViewSet(viewsets.ModelViewSet):
+    """Вьюсет создания Клиента. Автоматические создается чат."""
+
     queryset = CustomClientUser.objects.all()
-    serializer_class = CustomClientUserSerializer
+    serializer_class = ClienеSerializer
     http_method_names = ['post']
     permission_classes = (AllowAny,)
-
-    def perform_create(self, serializer):
-        return super().perform_create(serializer)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -127,7 +100,7 @@ class EducationViewSet(viewsets.ModelViewSet):
 
 
 class ChatViewSet(viewsets.ModelViewSet):
-    """Вьюшка просмотра и удаления чата."""
+    """Вьюшка просмотра чата, списка и удаления."""
 
     queryset = Chat.objects.all()
     serializer_class = ChatSerializer
@@ -152,6 +125,8 @@ class ChatViewSet(viewsets.ModelViewSet):
 
 
 class MessageViewSet(viewsets.ModelViewSet):
+    """Создание сообщения и просмотр списка сообщений."""
+
     serializer_class = MessageSerializer
     permission_classes = (AllowAny,)
     pagination_class = None
