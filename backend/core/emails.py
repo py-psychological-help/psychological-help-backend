@@ -1,7 +1,6 @@
 from mail_templated import send_mail
 
 from django.conf import settings
-from .utils import create_secret_key
 
 
 def send_confirmation_code(user, confirmation_code):

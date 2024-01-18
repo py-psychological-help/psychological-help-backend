@@ -33,4 +33,8 @@ sudo docker compose -f docker-compose.production.yml cp db.dump db:.
 sudo docker compose -f docker-compose.production.yml exec pg_restore -U psyhelp_user -f db.dump
 ```
 
-
+Для запуска проекта локально требуется сервер Redis и PostgreSQL:
+```bash
+sudo docker compose up
+sudo docker compose exec backend python manage.py migrate 
+```
