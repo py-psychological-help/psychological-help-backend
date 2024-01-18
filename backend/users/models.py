@@ -1,9 +1,12 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.utils import timezone
+from PIL import Image
+
 
 from core.emails import (send_education_confirm,
                          send_reg_confirm,
@@ -105,6 +108,15 @@ class Education(models.Model):
     scan = models.ImageField(
         upload_to='scans', blank=False
     )
+
+    def save(self):
+        """Сжимает загруженные сертификаты до нечитаемости."""
+        super().save()
+        if settings.COMPRESS_IMAGE:
+            with Image.open(self.scan.path) as image:
+                output_size = (60, 60)
+                image.thumbnail(output_size)
+                image.save(self.scan.path)
 
 
 class CustomClientUser(AbstractBaseUser):
