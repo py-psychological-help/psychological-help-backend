@@ -127,7 +127,6 @@ class EducationViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-@permission_classes((ApprovedByModerator, ))
 class ChatViewSet(viewsets.ModelViewSet):
     """Вьюшка просмотра и удаления чата."""
 
@@ -135,6 +134,7 @@ class ChatViewSet(viewsets.ModelViewSet):
     serializer_class = ChatSerializer
     http_method_names = ['get', 'delete']
     pagination_class = None
+    permission_classes = (ApprovedByModerator,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = ChatFilter
 

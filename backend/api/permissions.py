@@ -16,12 +16,12 @@ class IsOwnerOrReadOnly(BasePermission):
 
 
 class ApprovedByModerator(BasePermission):
+    """Не дает анонимам и User без approved_by_moderator получать список."""
+
     def has_permission(self, request, view):
-        if view.action == 'list' and (request.user.is_authenticated
-                                      and request.user.approved_by_moderator):
-            return True
-        elif view.action != 'list' and (request.method in SAFE_METHODS
-                                        or request.user.is_authenticated):
-            return True
-        else:
+        if view.action == 'list':
+            user = request.user
+            if (user.is_authenticated and user.approved_by_moderator):
+                return True
             return False
+        return True
