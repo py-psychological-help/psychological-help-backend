@@ -35,6 +35,12 @@ services:
       - static_volume:/backend_static/
       - media_volume:/media/
       - data_volume:/data/
+  frontend:
+    image: sergeyxx/psyhelp_frontend
+    env_file: .env
+    command: cp -r /app/build/. /frontend_static/
+    volumes:
+      - static_volume:/frontend_static/
   gateway:
     image: sergeyxx/psyhelp_gateway
     env_file: .env
