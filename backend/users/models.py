@@ -109,7 +109,8 @@ class Education(models.Model):
         upload_to='scans', blank=False
     )
 
-    def save(self):
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
         """Сжимает загруженные сертификаты до нечитаемости."""
         super().save()
         if settings.COMPRESS_IMAGE:
