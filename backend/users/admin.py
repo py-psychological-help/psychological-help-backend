@@ -19,6 +19,7 @@ class EducationAdminInlineAdmin(admin.TabularInline):
 
 @admin.register(CustomUser)
 class UserAdmin(admin.ModelAdmin):
+    fields = ('email','password')
     inlines = (EducationAdminInlineAdmin,)
     list_display = ('pk', 'email',
                     'first_name', 'last_name',

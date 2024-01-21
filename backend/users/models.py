@@ -6,6 +6,12 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.utils import timezone
 from PIL import Image
+from django.contrib.auth.hashers import (
+    check_password, is_password_usable, make_password,
+)
+
+from django.contrib.auth import password_validation
+
 
 
 from core.emails import (send_education_confirm,
