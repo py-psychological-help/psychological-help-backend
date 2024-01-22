@@ -8,7 +8,6 @@ send_gmail_task - отправка сообщений через gmail api
 """
 
 
-
 def send_confirmation_code(user, confirmation_code):
     """Оправка кода подтверждения почтты."""
     name = user.last_name + ' ' + user.first_name
