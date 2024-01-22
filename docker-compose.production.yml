@@ -17,7 +17,7 @@ services:
       - pg_data_production:/var/lib/postgresql/data/
     ports:
       - 5432:5432
-  redis-stack:
+  redis:
     image: redis/redis-stack-server:latest
     ports:
       - 6379:6379
@@ -29,7 +29,7 @@ services:
     env_file: .env
     depends_on:
       - db
-      - redis-stack
+      - redis
     restart: always
     volumes:
       - static_volume:/backend_static/
