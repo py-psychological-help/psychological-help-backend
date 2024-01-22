@@ -237,7 +237,3 @@ COMPRESS_IMAGE = True
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 CACHE_TTL = 60  # время хранение кеша в секундах
-
-print(os.getenv('REDIS_HOST'))
-print(CELERY_BROKER_URL)
-print(CELERY_RESULT_BACKEND)
