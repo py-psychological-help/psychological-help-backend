@@ -10,7 +10,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from django.core.exceptions import PermissionDenied
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 
+from psyhelp.settings import CACHE_TTL
 from core.utils import get_confirmation_code, get_chat_id, create_secret_key
 from core.emails import send_chat_url
 from users.models import CustomClientUser, Education
@@ -30,6 +33,7 @@ class UserMe(APIView):
     permission_classes = (IsAuthenticated,)
     http_method_names = ['get', 'post', 'put', 'patch', 'delete']
 
+    @method_decorator(cache_page(CACHE_TTL))
     def get(self, request):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
@@ -86,6 +90,7 @@ class EducationViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
     pagination_class = None
 
+    @method_decorator(cache_page(CACHE_TTL))
     def list(self, request, *args, **kwargs):
         psychologist = request.user
         queryset = self.queryset.filter(user=psychologist)
@@ -111,6 +116,7 @@ class ChatViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filterset_class = ChatFilter
 
+    @method_decorator(cache_page(CACHE_TTL))
     def retrieve(self, request, *args, **kwargs):
         chat_secret_key = self.kwargs.get('pk')
         chat_id = get_chat_id(chat_secret_key)
@@ -133,6 +139,7 @@ class MessageViewSet(viewsets.ModelViewSet):
     permission_classes = (AllowAny,)
     pagination_class = None
 
+    @method_decorator(cache_page(CACHE_TTL))
     def get_queryset(self):
         chat_secret_key = self.kwargs.get('chat_secret_key')
         chat_id = get_chat_id(chat_secret_key)
