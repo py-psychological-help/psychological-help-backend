@@ -132,7 +132,7 @@ class UserCreateSerializer(UserSerializer):
         return super(UserSerializer, self).create(validated_data)
 
 
-class ClienеSerializer(serializers.ModelSerializer):
+class ClientSerializer(serializers.ModelSerializer):
     """Сериализатор клиентов."""
 
     class Meta:
@@ -184,7 +184,7 @@ class MessageSerializer(serializers.ModelSerializer):
 class ChatSerializer(serializers.ModelSerializer):
     """Сериализатор чатов."""
 
-    client = ClienеSerializer(many=False)
+    client = ClientSerializer(many=False)
     psychologist = UserChatSerializer(many=False)
     messages = MessageSerializer(many=True)
     new = serializers.SerializerMethodField()
