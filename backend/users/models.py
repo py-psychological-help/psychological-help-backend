@@ -1,5 +1,3 @@
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser
@@ -7,10 +5,6 @@ from django.contrib.auth.models import PermissionsMixin
 from django.utils import timezone
 from PIL import Image
 
-
-from core.emails import (send_education_confirm,
-                         send_reg_confirm,
-                         send_client_reg_confirm)
 from .managers import CustomUserManager
 from .validators import year_validator, birthday_validator
 
@@ -123,7 +117,7 @@ class Education(models.Model):
 class CustomClientUser(AbstractBaseUser):
     """Модель клиентов."""
 
-    id = models.AutoField(primary_key=True)
+    # id = models.AutoField(primary_key=True)
     prefix = 'c'
     password = models.CharField('password', max_length=128, blank=True)
 
@@ -158,27 +152,4 @@ class CustomClientUser(AbstractBaseUser):
     complaint = models.TextField(blank=True)
 
     def __str__(self):
-        return self.prefix + str(self.id)
-
-
-@receiver(post_save, sender=CustomUser)
-def psychologist_notification(sender, instance, created, **kwargs):
-    """Отправляет уведомления о регистрации и проверке документов."""
-    if instance.approved_by_moderator and not instance.is_approve_sent:
-        send_education_confirm(instance)
-        instance.is_approve_sent = True
-        instance.save()
-
-    if not instance.is_reg_confirm_sent:
-        send_reg_confirm(instance)
-        instance.is_reg_confirm_sent = True
-        instance.save()
-
-
-@receiver(post_save, sender=CustomClientUser)
-def client_notification(sender, instance, created, **kwargs):
-    """Отправляет уведомление о успешной регистрации."""
-    if not instance.is_reg_confirm_sent:
-        send_client_reg_confirm(instance)
-        instance.is_reg_confirm_sent = True
-        instance.save()
+        return str(self.email)

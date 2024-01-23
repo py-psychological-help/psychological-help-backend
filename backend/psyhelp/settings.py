@@ -8,6 +8,7 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+REDIS = redis.Redis(host=os.getenv('REDIS_SK_HOST'), port=6379, db=0, decode_responses=True)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
