@@ -41,6 +41,15 @@ services:
     command: cp -r /app/build/. /frontend_static/
     volumes:
       - static_volume:/frontend_static/
+  worker:
+    image: sergeyxx/psyhelp_backend
+    command: celery -A psyhelp worker --loglevel info
+    env_file: .env
+    volumes:
+      - sent_emails:/app/sent_emails/
+    depends_on:
+      - backend
+      - redis
   gateway:
     image: sergeyxx/psyhelp_gateway
     env_file: .env

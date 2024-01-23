@@ -163,3 +163,4 @@ media/
 *.sqlite3
 .vscode/
 collected_static/
+sent_emails/
