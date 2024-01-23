@@ -22,6 +22,10 @@ ANONYMIZE_DATA = (
     os.getenv('ANONYMIZE_DATA') in ['TRUE', 'True', 'true', '1', 'yes']
 )
 
+GMAIL_SEND_MESSAGE = (
+    os.getenv('GMAIL_SEND_MESSAGE') in ['TRUE', 'True', 'true', '1', 'yes']
+)
+
 ALLOWED_HOSTS = ['127.0.0.1',
                  '0.0.0.0',
                  'localhost',
