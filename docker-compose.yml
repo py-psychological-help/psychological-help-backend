@@ -6,6 +6,7 @@ volumes:
   media_volume:
   data_volume:
   redis_data:
+  sent_emails:
 
 services:
   db:
@@ -34,6 +35,15 @@ services:
       - data_volume:/data/
     ports:
       - 8012:80
+  worker:
+    build: ./backend/
+    command: celery -A psyhelp worker --loglevel info
+    env_file: .env
+    volumes:
+      - sent_emails:/app/sent_emails/
+    depends_on:
+      - backend
+      - redis
   gateway:
     build: ./infra/
     env_file: .env
