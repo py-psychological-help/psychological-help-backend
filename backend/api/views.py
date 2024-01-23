@@ -1,26 +1,26 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.conf import settings
+from django.core.exceptions import PermissionDenied
 from django_filters.rest_framework import DjangoFilterBackend
 
-from rest_framework import mixins, viewsets
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+
+from rest_framework import viewsets
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import (AllowAny, IsAuthenticated,)
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from django.core.exceptions import PermissionDenied
-from django.views.decorators.cache import cache_page
-from django.utils.decorators import method_decorator
 
-from psyhelp.settings import CACHE_TTL
-from core.utils import get_confirmation_code, get_chat_id, create_secret_key
+from chats.models import Chat
 from core.emails import send_chat_url
+from core.utils import get_chat_id
 from users.models import CustomClientUser, Education
-from .serializers import (UserSerializer, ClienеSerializer,
+from .serializers import (UserSerializer, ClientSerializer,
                           EducationSerializer, ChatSerializer,
                           MessageSerializer)
-from chats.models import Chat, Message
 from .filters import ChatFilter
 from .permissions import ApprovedByModerator
 
@@ -33,7 +33,7 @@ class UserMe(APIView):
     permission_classes = (IsAuthenticated,)
     http_method_names = ['get', 'post', 'put', 'patch', 'delete']
 
-    @method_decorator(cache_page(CACHE_TTL))
+    @method_decorator(cache_page(settings.CACHE_TTL))
     def get(self, request):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
@@ -62,23 +62,9 @@ class CustomClientUserViewSet(viewsets.ModelViewSet):
     """Вьюсет создания Клиента. Автоматические создается чат."""
 
     queryset = CustomClientUser.objects.all()
-    serializer_class = ClienеSerializer
+    serializer_class = ClientSerializer
     http_method_names = ['post']
     permission_classes = (AllowAny,)
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-
-        email = request.data.get('email')
-        client = get_object_or_404(CustomClientUser, email=email)
-        chat = Chat.objects.create(client=client)
-        create_secret_key(chat)
-        return Response(serializer.data,
-                        status=status.HTTP_201_CREATED,
-                        headers=headers)
 
 
 class EducationViewSet(viewsets.ModelViewSet):
@@ -90,7 +76,7 @@ class EducationViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
     pagination_class = None
 
-    @method_decorator(cache_page(CACHE_TTL))
+    @method_decorator(cache_page(settings.CACHE_TTL))
     def list(self, request, *args, **kwargs):
         psychologist = request.user
         queryset = self.queryset.filter(user=psychologist)
@@ -116,7 +102,7 @@ class ChatViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filterset_class = ChatFilter
 
-    @method_decorator(cache_page(CACHE_TTL))
+    @method_decorator(cache_page(settings.CACHE_TTL))
     def retrieve(self, request, *args, **kwargs):
         chat_secret_key = self.kwargs.get('pk')
         chat_id = get_chat_id(chat_secret_key)
@@ -139,7 +125,7 @@ class MessageViewSet(viewsets.ModelViewSet):
     permission_classes = (AllowAny,)
     pagination_class = None
 
-    @method_decorator(cache_page(CACHE_TTL))
+    @method_decorator(cache_page(settings.CACHE_TTL))
     def get_queryset(self):
         chat_secret_key = self.kwargs.get('chat_secret_key')
         chat_id = get_chat_id(chat_secret_key)
