@@ -15,9 +15,9 @@ router.register('users/clients',
                 CustomClientUserViewSet,
                 basename='clients',)
 
-router.register(r'users/psychologists/me/education',
+router.register(r'users/psychologists/me/documents',
                 EducationViewSet,
-                basename='education',)
+                basename='documents',)
 
 router.register(r'chats/(?P<chat_secret_key>[a-zA-Z0-9]+)/messages',
                 MessageViewSet,
