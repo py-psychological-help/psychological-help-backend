@@ -1,7 +1,7 @@
 from celery import shared_task
 from mail_templated import send_mail
 
-from psyhelp import settings
+from django.conf import settings
 from .gmail import send_gmail
 
 
