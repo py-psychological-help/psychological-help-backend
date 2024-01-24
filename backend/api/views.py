@@ -23,7 +23,6 @@ from .serializers import (UserSerializer, ClientSerializer,
                           MessageSerializer)
 from .filters import ChatFilter
 from .permissions import ApprovedByModerator
-import json
 
 
 User = get_user_model()
