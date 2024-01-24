@@ -230,7 +230,16 @@ paths:
       parameters: []
       responses:
         '204':
-          description: '"Ваш профиль удален."'
+          description: 'No Content'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A success message
+                    example: Ваш профиль удален.
       tags:
       - api
 

@@ -23,6 +23,8 @@ from .serializers import (UserSerializer, ClientSerializer,
                           MessageSerializer)
 from .filters import ChatFilter
 from .permissions import ApprovedByModerator
+import json
+
 
 User = get_user_model()
 
@@ -54,7 +56,8 @@ class UserMe(APIView):
 
     def delete(self, request, *args, **kwargs):
         request.user.delete()
-        return Response("Ваш профиль удален.",
+        response_message = {'message': "Ваш профиль удален."}
+        return Response(response_message,
                         status=status.HTTP_204_NO_CONTENT)
 
 
