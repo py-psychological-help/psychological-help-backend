@@ -25,3 +25,15 @@ class ApprovedByModerator(BasePermission):
                 return True
             return False
         return True
+
+
+class IsModeratorOrAdmin(BasePermission):
+    """Позволяет только Модераторам и Орга-м получать список психологов."""
+
+    def has_permission(self, request, view):
+        user = request.user
+        if (user.is_authenticated and (user.is_superuser
+                                       or user.role == 'moderator'
+                                       or user.is_staff)):
+            return True
+        return False

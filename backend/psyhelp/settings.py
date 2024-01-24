@@ -8,6 +8,7 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Нужно для быстрого доступа к id чата по SECRET_KEY без обращения к БД
 REDIS = redis.Redis(host=os.getenv('REDIS_SK_HOST'), port=6379, db=0, decode_responses=True)
 
 # Quick-start development settings - unsuitable for production
@@ -119,12 +120,6 @@ CACHES = {
     }
 }
 
-CACHES = {
-    'default': {
-        "BACKEND": "django_redis.cache.RedisCache",
-        'LOCATION': os.getenv('REDIS_HOST')
-    }
-}
 
 AUTH_USER_MODEL = 'users.CustomUser'
 AUTHENTICATION_BACKENDS = ['users.backends.EmailBackend']
@@ -195,7 +190,7 @@ DJOSER = {
     'LOGIN_FIELD': 'email',
     'PERMISSIONS': {
         'user': ['rest_framework.permissions.IsAuthenticated'],
-        'user_list': ['rest_framework.permissions.IsAuthenticated'], },
+        'user_list': ['api.permissions.IsModeratorOrAdmin'], },
     'HIDE_USERS': False,
     'PASSWORD_RESET_CONFIRM_URL': 'reset-confirmation/{uid}/{token}/',
     'PASSWORD_CHANGED_EMAIL_CONFIRMATION': 'True',
