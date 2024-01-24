@@ -79,6 +79,11 @@ class Education(models.Model):
         verbose_name='Психолог',
         related_name='education'
     )
+    name = models.CharField(
+        'Название документа',
+        max_length=100,
+        blank=True
+    )
     university = models.CharField(
         'Название учебного заведения',
         max_length=100,
