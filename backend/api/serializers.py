@@ -43,7 +43,9 @@ class UserSerializer(serializers.ModelSerializer):
     """Сериализатор отображения Пользователей."""
 
     photo = Base64ImageField(required=False, allow_null=True)
-    documents = EducationSerializer(many=True, read_only=True)
+    documents = EducationSerializer(source='education',
+                                    many=True,
+                                    read_only=True)
     approved = serializers.BooleanField(source='approved_by_moderator',
                                         read_only=True)
 
@@ -54,10 +56,10 @@ class UserSerializer(serializers.ModelSerializer):
                   'birth_date',
                   'email',
                   'photo',
+                  'approved',
                   'documents',
-                  'approved'
                   )
-        read_only_fields = ('approved', 'email',)
+        read_only_fields = ('approved', 'email', 'id')
         model = User
 
 
