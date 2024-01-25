@@ -841,19 +841,17 @@ components:
           example: 1
           readOnly: true
         complaint:
-          type: integer
-          example: 1
-        text:
           type: string
-          format: string
+          example: "Меня никто не любит((("
         email:
           type: string
           format: email
           maxLength: 254
         first_name:
           type: string
+        last_name:
+          type: string
       required:
-      - complaint
       - email
     Client:
       type: object
@@ -863,19 +861,17 @@ components:
           example: 1
           readOnly: true
         complaint:
-          type: integer
-          example: 1
-        text:
           type: string
-          format: string
+          example: "Моя подруга ушла к начальнику"
         email:
           type: string
           format: email
           maxLength: 254
         first_name:
           type: string
+        last_name:
+          type: string
       required:
-      - complaint
       - email
     
     Chat:
