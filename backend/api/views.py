@@ -33,7 +33,7 @@ class UserMe(APIView):
 
     permission_classes = (IsAuthenticated,)
     http_method_names = ['get', 'post', 'put', 'patch', 'delete']
-
+    # На ревью. Здесь подключается кеширование 
     @method_decorator(cache_page(settings.CACHE_TTL))
     def get(self, request):
         serializer = UserSerializer(request.user)
@@ -77,7 +77,7 @@ class EducationViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'delete']
     permission_classes = (IsAuthenticated,)
     pagination_class = None
-
+    # На ревью. Здесь подключается кеширование 
     @method_decorator(cache_page(settings.CACHE_TTL))
     def list(self, request, *args, **kwargs):
         psychologist = request.user
@@ -104,6 +104,7 @@ class ChatViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filterset_class = ChatFilter
 
+    # На ревью. Здесь подключается кеширование 
     @method_decorator(cache_page(settings.CACHE_TTL))
     def retrieve(self, request, *args, **kwargs):
         chat_secret_key = self.kwargs.get('pk')
@@ -126,7 +127,7 @@ class MessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
     permission_classes = (AllowAny,)
     pagination_class = None
-
+    # На ревью. Здесь подключается кеширование 
     @method_decorator(cache_page(settings.CACHE_TTL))
     def get_queryset(self):
         chat_secret_key = self.kwargs.get('chat_secret_key')
@@ -146,7 +147,7 @@ class MessageViewSet(viewsets.ModelViewSet):
             raise PermissionDenied("Нельзя писать за другого психолога!")
         serializer.save(is_psy_author=True, chat=chat)
 
-
+# На ревью. Здесь подключается кеширование 
 @api_view(['POST', ])
 @permission_classes((IsAuthenticated, ))
 def activate_chat(request, chat_secret_key):
@@ -161,7 +162,7 @@ def activate_chat(request, chat_secret_key):
     return Response("У этого чата уже есть Психолог. Письмо направлено",
                     status=status.HTTP_400_BAD_REQUEST)
 
-
+# На ревью. Здесь подключается кеширование 
 @api_view(['POST', ])
 @permission_classes((IsAuthenticated, ))
 def finish_chat(request, chat_secret_key):

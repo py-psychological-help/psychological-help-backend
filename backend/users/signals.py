@@ -36,7 +36,7 @@ pre_save.connect(anonymize_data,
                  sender=CustomClientUser,
                  dispatch_uid='CustomClientUser_anonymize')
 
-
+# На ревью. Использование Signals для уведомлений на почту.
 @receiver(post_save, sender=CustomClientUser)
 def client_notification(sender, instance, created, **kwargs):
     """Отправляет уведомление о успешной регистрации."""

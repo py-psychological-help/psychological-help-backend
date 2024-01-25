@@ -8,6 +8,7 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# На ревью. Здесь подключается Redis в роли словаря 
 # Нужно для быстрого доступа к id чата по SECRET_KEY без обращения к БД
 REDIS = redis.Redis(host=os.getenv('REDIS_SK_HOST'), port=6379, db=0, decode_responses=True)
 
@@ -109,7 +110,7 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT'),
     }
 }
-
+# На ревью. Здесь подключается кеширование Redis
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
@@ -206,10 +207,12 @@ CORS_ALLOWED_ORIGINS = [
     'https://' + os.getenv('PROD_DOMAIN_NAME'),
 ]
 
+# Настройки для тестирования
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
-SERVER_EMAIL = 'from@example.com'
+SERVER_EMAIL = 'account' + os.getenv('PROD_DOMAIN_NAME')
 
+# Настройки боевой почты
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.getenv('EMAIL_HOST')
 EMAIL_USE_TLS = False
@@ -224,7 +227,7 @@ MAX_EMAIL_LEN = 50
 MAX_USER_LEN = 50
 
 CHAT_SECRET_KEY_LENGTH = 20
-
+# На ревью. Здесь настройкр Celery 
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
 CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
 CELERY_TASK_TRACK_STARTED = True
@@ -233,7 +236,7 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
 COMPRESS_IMAGE = True
-
+# На ревью. Здесь подключается кеширование 
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 CACHE_TTL = 60  # время хранение кеша в секундах
