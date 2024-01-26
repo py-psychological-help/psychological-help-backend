@@ -6,7 +6,10 @@ from django.utils import timezone
 from PIL import Image
 
 from .managers import CustomUserManager
-from .validators import year_validator, birthday_validator
+from .validators import (AlphanumericValidator,
+                         birthday_validator,
+                         NameValidator,
+                         year_validator)
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
@@ -22,19 +25,22 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         PSYCHOLOGIST = 'psychologist', 'Психолог'
 
     first_name = models.CharField(
-        max_length=150,
+        max_length=50,
         blank=False,
-        verbose_name='Имя'
+        verbose_name='Имя',
+        validators=[NameValidator, ]
     )
     last_name = models.CharField(
-        max_length=150,
+        max_length=50,
         blank=False,
-        verbose_name='Фамилия'
+        verbose_name='Фамилия',
+        validators=[NameValidator, ]
     )
     patronymic = models.CharField(
-        max_length=150,
+        max_length=50,
         blank=True,
-        verbose_name='Отчество'
+        verbose_name='Отчество',
+        validators=[NameValidator, ]
     )
     role = models.CharField(
         max_length=25,
@@ -44,7 +50,11 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     photo = models.ImageField(
         upload_to='photos/', blank=True
     )
-    email = models.EmailField('email адрес', blank=False, unique=True)
+    email = models.EmailField('email адрес',
+                              blank=False,
+                              unique=True,
+                              max_length=50,
+                              validators=[AlphanumericValidator, ])
     birth_date = models.DateField(blank=True,
                                   null=True,
                                   validators=[birthday_validator, ])
@@ -122,22 +132,28 @@ class CustomClientUser(AbstractBaseUser):
     password = models.CharField('password', max_length=128, blank=True)
 
     first_name = models.CharField(
-        max_length=150,
+        max_length=50,
         blank=True,
-        verbose_name='Имя')
+        verbose_name='Имя',
+        validators=[NameValidator, ])
 
     last_name = models.CharField(
-        max_length=150,
+        max_length=50,
         blank=True,
-        verbose_name='Фамилия')
+        verbose_name='Фамилия',
+        validators=[NameValidator, ])
 
     patronymic = models.CharField(
-        max_length=150,
+        max_length=50,
         blank=True,
-        verbose_name='Отчество')
+        verbose_name='Отчество',
+        validators=[NameValidator, ])
 
     photo = models.ImageField(upload_to='photos/', blank=True)
-    email = models.EmailField('email адрес', blank=False, unique=True)
+    email = models.EmailField('email адрес',
+                              blank=False,
+                              unique=True,
+                              validators=[AlphanumericValidator, ])
     birth_date = models.DateField(blank=True,
                                   null=True,
                                   validators=[birthday_validator, ])

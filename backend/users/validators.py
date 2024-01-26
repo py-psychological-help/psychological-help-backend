@@ -3,6 +3,7 @@ from datetime import date
 
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 
 
 def year_validator(value):
@@ -20,3 +21,14 @@ def birthday_validator(value):
         raise ValidationError('Вам должно быть более 18 лет для регистрации!')
     if age > 200:
         raise ValidationError('Возраст не может быть более 200 лет!')
+
+
+AlphanumericValidator = RegexValidator(
+    r"^[a-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[a-z0-9.-]+$",
+    '''Разрешены только строчные буквы латинского
+    алфавита, цифры, и символы
+    “@”, “-”, “_” и “.”. ''')
+
+NameValidator = RegexValidator(r"^([А-ЯЁ][а-яё]+[\-\s]?){3,}",
+                               '''Разрешены только буквы русского алфавита,
+                               дефис, и символ пробела''')
