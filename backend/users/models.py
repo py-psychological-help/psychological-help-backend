@@ -154,7 +154,7 @@ class CustomClientUser(AbstractBaseUser):
     date_joined = models.DateTimeField(default=timezone.now)
 
     objects = CustomUserManager()
-    complaint = models.TextField(blank=True)
+    complaint = models.TextField(blank=False)
 
     def __str__(self):
         return str(self.email)
