@@ -29,6 +29,6 @@ AlphanumericValidator = RegexValidator(
     алфавита, цифры, и символы
     “@”, “-”, “_” и “.”. ''')
 
-NameValidator = RegexValidator(r"^([А-ЯЁ][а-яё]+[\-\s]?){3,}",
+NameValidator = RegexValidator(r"^([а-яА-ЯёЁ -]+)$",
                                '''Разрешены только буквы русского алфавита,
                                дефис, и символ пробела''')

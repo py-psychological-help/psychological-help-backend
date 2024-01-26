@@ -5,9 +5,11 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.core.files.base import ContentFile
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 
 from users.models import Education, CustomClientUser
 from chats.models import Chat, Message
+from users.validators import (AlphanumericValidator, NameValidator)
 
 User = get_user_model()
 
@@ -86,9 +88,15 @@ class UserCreateSerializer(UserSerializer):
     """Сериализатор создания пользователей."""
 
     email = serializers.EmailField(required=True,
-                                   max_length=settings.MAX_EMAIL_LEN)
-    first_name = serializers.CharField(required=True)
-    last_name = serializers.CharField(required=True)
+                                   max_length=settings.MAX_EMAIL_LEN,
+                                   validators=[AlphanumericValidator,
+                                               UniqueValidator])
+    first_name = serializers.CharField(required=True,
+                                       max_length=settings.MAX_USER_LEN,
+                                       validators=[NameValidator])
+    last_name = serializers.CharField(required=True,
+                                      max_length=settings.MAX_USER_LEN,
+                                      validators=[NameValidator])
     approved = serializers.BooleanField(source='approved_by_moderator',
                                         read_only=True)
 
@@ -105,26 +113,6 @@ class UserCreateSerializer(UserSerializer):
                             'last_name',
                             'approved')
         extra_kwargs = {'password': {'write_only': True}, }
-
-    def validate_email(self, email):
-        """Валидация почты."""
-        if User.objects.filter(email=email):
-            raise serializers.ValidationError('Пользователь с таким email уже '
-                                              'существует')
-        return email
-
-    def validate_first_name(self, first_name):
-        if len(first_name) > settings.MAX_USER_LEN:
-            raise serializers.ValidationError('Имя не может быть длиннее '
-                                              f'{settings.MAX_USER_LEN} '
-                                              'символов')
-        return first_name
-
-    def validate_last_name(self, last_name):
-        if len(last_name) > settings.MAX_USER_LEN:
-            raise serializers.ValidationError('Имя не может быть длиннее 150 '
-                                              'символов')
-        return last_name
 
     def create(self, validated_data):
         """Переопределение create для хэширования паролей."""
