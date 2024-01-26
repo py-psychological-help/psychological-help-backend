@@ -139,7 +139,6 @@ class ClientSerializer(serializers.ModelSerializer):
         fields = ('id',
                   'email',
                   'first_name',
-                  'last_name',
                   'complaint',
                   )
         read_only_fields = ('id',)

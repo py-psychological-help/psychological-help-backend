@@ -373,12 +373,27 @@ paths:
             schema:
               $ref: '#/components/schemas/ClientCreate'
       responses:
-        '200':
+        '201':
           description: 'Created'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClientCreate'
+        '400':
+            description: Bad request.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                      format: string
+                      example: Клиент с таким email адрес уже существует.
+                    complaint:
+                      type: string
+                      format: string
+                      example: Поле обязательно для заполнения.
         '403':
             description: 'Forbidden. If authenticated.'
             content:
@@ -849,10 +864,9 @@ components:
           maxLength: 254
         first_name:
           type: string
-        last_name:
-          type: string
       required:
       - email
+      - complaint
     Client:
       type: object
       properties:
@@ -873,6 +887,7 @@ components:
           type: string
       required:
       - email
+      - complaint
     
     Chat:
       type: object
