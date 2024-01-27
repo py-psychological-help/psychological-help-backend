@@ -114,6 +114,13 @@ class UserCreateSerializer(UserSerializer):
                             'approved')
         extra_kwargs = {'password': {'write_only': True}, }
 
+    def validate_email(self, email):
+        """Валидация почты."""
+        if User.objects.filter(email=email):
+            raise serializers.ValidationError('Пользователь с таким email уже '
+                                              'существует')
+        return email
+
     def create(self, validated_data):
         """Переопределение create для хэширования паролей."""
         validated_data['password'] = make_password(validated_data['password'])
