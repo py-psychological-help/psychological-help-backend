@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 
 from .models import CustomUser, Education, CustomClientUser
 
@@ -18,14 +19,109 @@ class EducationAdminInlineAdmin(admin.TabularInline):
 
 
 @admin.register(CustomUser)
-class UserAdmin(admin.ModelAdmin):
-    fields = ('email','password')
+class CustomUserAdmin(UserAdmin):
     inlines = (EducationAdminInlineAdmin,)
     list_display = ('pk', 'email',
                     'first_name', 'last_name',
                     'approved_by_moderator', 'role', 'birth_date')
     list_filter = ('email', 'approved_by_moderator')
     search_fields = ('email',)
+    ordering = ("email",)
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "email",
+                    "password",
+                )
+            },
+        ),
+        (
+            ("Персональные данные"),
+            {
+                "fields": (
+                    "first_name",
+                    "last_name",
+                    "patronymic",
+                    "photo",
+                )
+            },
+        ),
+        (
+            ("Права"),
+            {
+                "fields": (
+                    "role",
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "approved_by_moderator",
+                    "is_reg_confirm_sent",
+                    "is_approve_sent",
+                    "confirmation_code",
+                    "groups",
+                    "user_permissions",
+                ),
+            },
+        ),
+        (
+            ("Даты"),
+            {
+                "fields": (
+                    "birth_date",
+                    "last_login",
+                    "date_joined",
+                )
+            },
+        ),
+        ((None), {"fields": ("greeting",)}),
+    )
+    add_fieldsets = (
+        (
+            None,
+            {"fields": ("email", "password1", "password2")},
+        ),
+        (
+            ("Персональные данные"),
+            {
+                "fields": (
+                    "first_name",
+                    "last_name",
+                    "patronymic",
+                    "photo",
+                )
+            },
+        ),
+        (
+            ("Права"),
+            {
+                "fields": (
+                    "role",
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "approved_by_moderator",
+                    "is_reg_confirm_sent",
+                    "is_approve_sent",
+                    "confirmation_code",
+                    "groups",
+                    "user_permissions",
+                ),
+            },
+        ),
+        (
+            ("Даты"),
+            {
+                "fields": (
+                    "birth_date",
+                    "last_login",
+                    "date_joined",
+                )
+            },
+        ),
+        ((None), {"fields": ("greeting",)}),
+    )
 
 
 @admin.register(CustomClientUser)
