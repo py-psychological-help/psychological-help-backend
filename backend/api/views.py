@@ -24,6 +24,7 @@ from .serializers import (UserSerializer, ClientSerializer,
 from .filters import ChatFilter
 from .permissions import ApprovedByModerator
 
+
 User = get_user_model()
 
 
@@ -33,7 +34,6 @@ class UserMe(APIView):
     permission_classes = (IsAuthenticated,)
     http_method_names = ['get', 'post', 'put', 'patch', 'delete']
 
-    @method_decorator(cache_page(settings.CACHE_TTL))
     def get(self, request):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
@@ -54,7 +54,8 @@ class UserMe(APIView):
 
     def delete(self, request, *args, **kwargs):
         request.user.delete()
-        return Response("Ваш профиль удален.",
+        response_message = {'message': "Ваш профиль удален."}
+        return Response(response_message,
                         status=status.HTTP_204_NO_CONTENT)
 
 
@@ -76,7 +77,6 @@ class EducationViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
     pagination_class = None
 
-    @method_decorator(cache_page(settings.CACHE_TTL))
     def list(self, request, *args, **kwargs):
         psychologist = request.user
         queryset = self.queryset.filter(user=psychologist)
@@ -102,7 +102,6 @@ class ChatViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filterset_class = ChatFilter
 
-    @method_decorator(cache_page(settings.CACHE_TTL))
     def retrieve(self, request, *args, **kwargs):
         chat_secret_key = self.kwargs.get('pk')
         chat_id = get_chat_id(chat_secret_key)
@@ -125,7 +124,6 @@ class MessageViewSet(viewsets.ModelViewSet):
     permission_classes = (AllowAny,)
     pagination_class = None
 
-    @method_decorator(cache_page(settings.CACHE_TTL))
     def get_queryset(self):
         chat_secret_key = self.kwargs.get('chat_secret_key')
         chat_id = get_chat_id(chat_secret_key)

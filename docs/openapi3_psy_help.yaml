@@ -230,14 +230,23 @@ paths:
       parameters: []
       responses:
         '204':
-          description: '"Ваш профиль удален."'
+          description: 'No Content'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A success message
+                    example: Ваш профиль удален.
       tags:
       - api
 
-  /users/psychologists/me/education/:
+  /users/psychologists/me/documents/:
     get:
-      operationId: listEducations
-      description: 'Get my education information.'
+      operationId: listDocuments
+      description: 'Get my documents information.'
       parameters: []
       responses:
         '200':
@@ -246,7 +255,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Education'
+                  $ref: '#/components/schemas/Documents'
           description: ''
         '401':
             description: Unauthorized.
@@ -257,21 +266,21 @@ paths:
       tags:
       - api
     post:
-      operationId: createEducation
-      description: 'Create new education object.'
+      operationId: createDocument
+      description: 'Create new document object.'
       parameters: []
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Education'
+              $ref: '#/components/schemas/Documents'
           
       responses:
         '201':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Education'
+                $ref: '#/components/schemas/Documents'
           description: ''
         '400':
             description: Bad request.
@@ -286,7 +295,7 @@ paths:
                       example: Обязательное поле.
       tags:
       - api
-  /users/psychologists/me/education/{id}/:
+  /users/psychologists/me/documents/{id}/:
     parameters:
       - name: id
         required: true
@@ -295,8 +304,8 @@ paths:
         schema:
           type: integer
     delete:
-      operationId: deleteEducation
-      description: 'Delete my certain education object.'
+      operationId: deleteDocument
+      description: 'Delete my certain document object.'
       parameters: []
       responses:
         '204':
@@ -307,12 +316,6 @@ paths:
               application/json:
                 schema:
                   $ref: '#/components/schemas/Unauthorized'
-        '403':
-            description: Forbidden.
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/Forbidden'
         '404':
             description: Not found.
             content:
@@ -370,12 +373,27 @@ paths:
             schema:
               $ref: '#/components/schemas/ClientCreate'
       responses:
-        '200':
+        '201':
           description: 'Created'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClientCreate'
+        '400':
+            description: Bad request.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                      format: string
+                      example: Клиент с таким email адрес уже существует.
+                    complaint:
+                      type: string
+                      format: string
+                      example: Поле обязательно для заполнения.
         '403':
             description: 'Forbidden. If authenticated.'
             content:
@@ -733,10 +751,15 @@ paths:
       parameters: []
       responses:
         '201':
+          description: ''
           content:
             application/json:
               schema:
-          description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A success message
         '401':
             description: Unauthorized.
             content:
@@ -773,11 +796,11 @@ components:
         photo:
           type: string
           format: binary
-        education:
+        documents:
           type: array
           readOnly: true
           items:
-            $ref: '#/components/schemas/Education'
+            $ref: '#/components/schemas/Documents'
         approved:
             type: boolean
             format: boolean
@@ -811,26 +834,14 @@ components:
       - last_name
       - birth_date
 
-    Education:
+    Documents:
       type: object
       properties:
         id:
           type: integer
           example: 1
-        university:
+        name:
           type: string
-          maxLength: 254
-        faculty:
-          type: string
-          maxLength: 254
-        specialization:
-          type: string
-          maxLength: 254
-        year_of_graduation:
-          type: integer
-          example: 1980
-          minimum: 1900
-          maximum: 2026
         scan:
           type: string
           format: binary
@@ -845,11 +856,8 @@ components:
           example: 1
           readOnly: true
         complaint:
-          type: integer
-          example: 1
-        text:
           type: string
-          format: string
+          example: "Меня никто не любит((("
         email:
           type: string
           format: email
@@ -857,8 +865,8 @@ components:
         first_name:
           type: string
       required:
-      - complaint
       - email
+      - complaint
     Client:
       type: object
       properties:
@@ -867,20 +875,19 @@ components:
           example: 1
           readOnly: true
         complaint:
-          type: integer
-          example: 1
-        text:
           type: string
-          format: string
+          example: "Моя подруга ушла к начальнику"
         email:
           type: string
           format: email
           maxLength: 254
         first_name:
           type: string
+        last_name:
+          type: string
       required:
-      - complaint
       - email
+      - complaint
     
     Chat:
       type: object

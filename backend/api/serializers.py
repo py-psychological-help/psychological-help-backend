@@ -35,10 +35,7 @@ class EducationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Education
         fields = ('id',
-                  'university',
-                  'faculty',
-                  'specialization',
-                  'year_of_graduation',
+                  'name',
                   'scan'
                   )
         read_only_fields = ('id',)
@@ -48,7 +45,9 @@ class UserSerializer(serializers.ModelSerializer):
     """Сериализатор отображения Пользователей."""
 
     photo = Base64ImageField(required=False, allow_null=True)
-    education = EducationSerializer(many=True, read_only=True)
+    documents = EducationSerializer(source='education',
+                                    many=True,
+                                    read_only=True)
     approved = serializers.BooleanField(source='approved_by_moderator',
                                         read_only=True)
 
@@ -59,10 +58,10 @@ class UserSerializer(serializers.ModelSerializer):
                   'birth_date',
                   'email',
                   'photo',
-                  'education',
-                  'approved'
+                  'approved',
+                  'documents',
                   )
-        read_only_fields = ('approved', 'email',)
+        read_only_fields = ('approved', 'email', 'id')
         model = User
 
 
@@ -135,7 +134,6 @@ class ClientSerializer(serializers.ModelSerializer):
         fields = ('id',
                   'email',
                   'first_name',
-                  'last_name',
                   'complaint',
                   )
         read_only_fields = ('id',)

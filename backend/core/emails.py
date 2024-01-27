@@ -1,11 +1,5 @@
 from django.conf import settings
-from .tasks import send_email_task, send_gmail_task
-
-
-"""
-send_email_task - отправка сообщений через SMTP
-send_gmail_task - отправка сообщений через gmail api
-"""
+from .tasks import send_email_task
 
 
 def send_confirmation_code(user, confirmation_code):

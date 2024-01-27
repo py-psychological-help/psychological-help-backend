@@ -89,6 +89,11 @@ class Education(models.Model):
         verbose_name='Психолог',
         related_name='education'
     )
+    name = models.CharField(
+        'Название документа',
+        max_length=100,
+        blank=True
+    )
     university = models.CharField(
         'Название учебного заведения',
         max_length=100,
@@ -165,7 +170,7 @@ class CustomClientUser(AbstractBaseUser):
     date_joined = models.DateTimeField(default=timezone.now)
 
     objects = CustomUserManager()
-    complaint = models.TextField(blank=True)
+    complaint = models.TextField(blank=False)
 
     def __str__(self):
         return str(self.email)
