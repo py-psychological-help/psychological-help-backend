@@ -1,26 +1,24 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import CustomUser, Education, CustomClientUser
+from .models import CustomUser, Document, CustomClientUser
 
 
-@admin.register(Education)
-class EducationAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'user', 'scan',
-                    'university', 'faculty',
-                    'specialization', 'year_of_graduation', )
+@admin.register(Document)
+class DocumentAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'user', 'scan', )
 
 
-class EducationAdminInlineAdmin(admin.TabularInline):
+class DocumentAdminInlineAdmin(admin.TabularInline):
     """Класс для вывода Сертификатов в User."""
 
-    model = Education
+    model = Document
     fields = ('scan',)
 
 
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
-    inlines = (EducationAdminInlineAdmin,)
+    inlines = (DocumentAdminInlineAdmin,)
     list_display = ('pk', 'email',
                     'first_name', 'last_name',
                     'approved_by_moderator', 'role', 'birth_date')
