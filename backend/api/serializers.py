@@ -7,7 +7,7 @@ from django.core.files.base import ContentFile
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-from users.models import Education, CustomClientUser
+from users.models import Document, CustomClientUser
 from chats.models import Chat, Message
 from users.validators import (AlphanumericValidator,
                               EmailSymbolsValidator,
@@ -30,13 +30,13 @@ class Base64ImageField(serializers.ImageField):
         return super().to_internal_value(data)
 
 
-class EducationSerializer(serializers.ModelSerializer):
-    """Сериализатор объектов Образования."""
+class DocumentSerializer(serializers.ModelSerializer):
+    """Сериализатор объектов Документы."""
 
     scan = Base64ImageField(required=True, allow_null=False)
 
     class Meta:
-        model = Education
+        model = Document
         fields = ('id',
                   'name',
                   'scan'
@@ -48,9 +48,8 @@ class UserSerializer(serializers.ModelSerializer):
     """Сериализатор отображения Пользователей."""
 
     photo = Base64ImageField(required=False, allow_null=True)
-    documents = EducationSerializer(source='education',
-                                    many=True,
-                                    read_only=True)
+    documents = DocumentSerializer(source='document', many=True,
+                                   read_only=True)
     approved = serializers.BooleanField(source='approved_by_moderator',
                                         read_only=True)
 
