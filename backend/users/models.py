@@ -12,7 +12,6 @@ from .validators import (AlphanumericValidator,
                          NameSpacesValidator,
                          NameSymbolsValidator,
                          year_validator)
-                         NameValidator,)
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
