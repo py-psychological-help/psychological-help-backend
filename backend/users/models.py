@@ -10,8 +10,7 @@ from .validators import (AlphanumericValidator,
                          birthday_validator,
                          EmailSymbolsValidator,
                          NameSpacesValidator,
-                         NameSymbolsValidator,
-                         year_validator)
+                         NameSymbolsValidator)
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
@@ -132,7 +131,7 @@ class CustomClientUser(AbstractBaseUser):
     """Модель клиентов."""
 
     prefix = 'c'
-    password = models.CharField('password', max_length=128, blank=True)
+    password = models.CharField('password', max_length=20, blank=True,)
 
     first_name = models.CharField(
         max_length=50,
