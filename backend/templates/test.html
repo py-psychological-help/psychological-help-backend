@@ -14,17 +14,19 @@
     <button id="send-button">Отправить</button>
 
     <script>
-        const chat_secret_key = '7fdKYDAYgFASHOMoe5mi'
+
+        const chat_secret_key = 'gRHCHcQdqYmP4Bix7EfN';
         const chatLog = document.querySelector('#chat-log');
         const messageInput = document.querySelector('#message-input');
         const sendButton = document.querySelector('#send-button');
         const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('token');
+        const token = '';
 
         const chatSocket = new WebSocket(`ws://${window.location.host}/ws/chat/${chat_secret_key}/?token=${token}}`);
 
         chatSocket.onopen = function (e) {
             console.log('WebSocket connection opened');
+            console.log(chat_secret_key)
         };
 
         chatSocket.onmessage = function (e) {
@@ -32,13 +34,24 @@
             const message = data.message;
             const user = data.user;
             const date = data.date;
-            const sender = data.sender;
+            const psy = data.psy;
+            const error_msg = data.error_msg;
             const messageElement = document.createElement('div');
-            
-            // Отображаем имя пользователя и сообщение
-            messageElement.innerText = 'data: ' + date + '\nsender: ' + sender + '\n' + message;
+            console.log(data)
+            if (error_msg){
+                messageElement.innerText = error_msg;
+            }else{
+                messageElement.innerText = 'data: ' + date + '\npsy: ' + psy + '\n' + message;
+            }
+
             
             chatLog.appendChild(messageElement);
+        };
+
+        chatSocket.onerror = function (e) {
+            const errorElement = document.createElement('div');
+            errorElement.innerText = 'Произошла ошибка: ' + e.error;
+            chatLog.appendChild(errorElement);
         };
 
         sendButton.addEventListener('click', function() {

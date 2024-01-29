@@ -24,6 +24,7 @@ class Chat(models.Model):
                                      db_index=True)
     active = models.BooleanField(default=True)
     chat_secret_key = models.CharField(max_length=50, blank=True)
+    connected_clients = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return str(self.client)
