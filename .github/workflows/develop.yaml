@@ -18,6 +18,11 @@ jobs:
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+      redis:
+        image: redis/redis-stack-server:latest
+        ports:
+          - 6379:6379
+          - 8001:8001
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python
@@ -30,16 +35,20 @@ jobs:
         python -m pip install --upgrade pip 
         pip install flake8==6.0.0 flake8-isort==6.0.0
         pip install -r ./backend/requirements.txt 
-        pip install pytest==6.2.5
+        pip install pytest=6.2.5
         pip install PyYAML
     - name: Test with flake8 and django tests
       env:
-        POSTGRES_USER: ${{ secrets.PG_USER }}
-        POSTGRES_PASSWORD: ${{ secrets.PG_PASSWORD }}
-        POSTGRES_DB: ${{ secrets.PG_NAME }}
+        env:
+        POSTGRES_DB: django_db
+        POSTGRES_USER: django_user
+        POSTGRES_PASSWORD: django_password
         DB_HOST: 127.0.0.1
         DB_PORT: 5432
         SECRET_KEY: l*#!2d8ecy$ls$vd=yuz$3wh5g!e@s#z^t!tk_!#(y5+uzl^qm
+        SERVER_IP: 111.111.111.111
+        TEST_DOMAIN_NAME: letstalk.ru
+        PROD_DOMAIN_NAME: davai.ru
       run: |
         python -m flake8 backend/
         pytest
