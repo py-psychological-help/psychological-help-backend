@@ -54,9 +54,7 @@ class UserMe(APIView):
 
     def delete(self, request, *args, **kwargs):
         request.user.delete()
-        response_message = {'message': "Ваш профиль удален."}
-        return Response(response_message,
-                        status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class CustomClientUserViewSet(viewsets.ModelViewSet):
