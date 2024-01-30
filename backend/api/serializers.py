@@ -12,7 +12,9 @@ from chats.models import Chat, Message
 from users.validators import (AlphanumericValidator,
                               EmailSymbolsValidator,
                               NameSpacesValidator,
-                              NameSymbolsValidator)
+                              NameSymbolsValidator,
+                              PasswordContentValidator,
+                              PasswordGroupsValidator)
 
 User = get_user_model()
 
@@ -106,6 +108,12 @@ class UserCreateSerializer(UserSerializer):
                                                   NameSymbolsValidator, ])
     approved = serializers.BooleanField(source='approved_by_moderator',
                                         read_only=True)
+    password = serializers.CharField(required=True,
+                                     min_length=8,
+                                     max_length=20,
+                                     write_only=True,
+                                     validators=[PasswordContentValidator,
+                                                 PasswordGroupsValidator, ])
 
     class Meta:
         model = User
@@ -119,7 +127,6 @@ class UserCreateSerializer(UserSerializer):
                             'first_name',
                             'last_name',
                             'approved')
-        extra_kwargs = {'password': {'write_only': True}, }
 
     def create(self, validated_data):
         """Переопределение create для хэширования паролей."""
