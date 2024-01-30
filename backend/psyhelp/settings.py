@@ -38,6 +38,7 @@ ALLOWED_HOSTS = ['127.0.0.1',
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -87,7 +88,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'psyhelp.wsgi.application'
+# WSGI_APPLICATION = 'psyhelp.wsgi.application'
 ASGI_APPLICATION = 'psyhelp.asgi.application'
 
 CHANNEL_LAYERS = {

@@ -16,23 +16,25 @@ from .models import Chat, Message
 User = get_user_model()
 
 
-class ChatConsumer(ObserverModelInstanceMixin, GenericAsyncAPIConsumer):
+class ChatConsumer(
+    # ObserverModelInstanceMixin,
+    GenericAsyncAPIConsumer):
 
     async def connect(self):
         await self.accept()
         self.chat_secret_key = self.scope['url_route']['kwargs']['chat_secret_key']
         self.chat = await self.get_chat()
         self.room_group_name = 'chat_%s' % self.chat_secret_key
-        self.token = self.scope['query_string'].split(b'=')[1].decode()[:-1] # получение токена из url
-        self.user = await self.get_user()
+        self.user = self.scope['user']
+
         error_message = await self.check_chat_access()
 
         if error_message:
             await self.send_error_message(error_message)
             await self.close()
-            return
+            await super().disconnect(444)
 
-        if not self.user:
+        if self.user.is_anonymous:
             await self.set_connected_clients()
         else:
             await self.set_psy_in_chat()
@@ -45,61 +47,48 @@ class ChatConsumer(ObserverModelInstanceMixin, GenericAsyncAPIConsumer):
         await self.send_old_message(messages)
 
     async def receive(self, text_data):
-            """Формируем словарь и отправляем через функцию уаказанную в type"""
-            text_data_json = json.loads(text_data)
-            message = text_data_json['message']
-            
-            await self.save_message(message)
- 
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {
-                    'type': 'chat_message',
-                    'message': message,
-                    'psy': bool(self.user),
-                    'date': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                }
-            )
+        """Формируем словарь и отправляем через функцию уаказанную в type"""
+        text_data_json = json.loads(text_data)
+        message = text_data_json['message']
+        
+        await self.save_message(message)
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'chat_message',
+                'message': message,
+            }
+        )
 
     async def chat_message(self, event):
         # Отправка сообщения обратно через WebSocket
         message = event['message']
-        await self.send(text_data=json.dumps({
-            'message': message,
-            'psy': event['psy'],
-            'date': event['date']
-        }))
+        text = self.format_message(message=message, date=datetime.datetime.now())
+        await self.send(text_data=text)
+    
 
     async def disconnect(self, code):
-        if hasattr(self, "chat_subscribe"):
-            await self.remove_user_from_room(self.chat_subscribe)
-            await self.notify_users()
-        if not self.user:
+        # if hasattr(self, "chat_subscribe"):
+        #     await self.remove_user_from_room(self.chat_subscribe)
+        #     await self.notify_users()
+        if self.user.is_anonymous:
             await self.set_connected_clients(disconnected=True)
         await super().disconnect(code)
 
-    @database_sync_to_async
-    def get_user(self):
-        """Получаем юзера через токен"""
-        try:
-            token_obj = Token.objects.get(key=self.token)
-            user = token_obj.user
-        except Token.DoesNotExist:
-            user = None
-        return user
     
     @database_sync_to_async
     def get_messages(self):
-        return list(Message.objects.filter(chat=self.chat))
+        return list(Message.objects.filter(chat=self.chat).order_by('date_time'))[-2:]
     
     async def send_old_message(self, messages):
         """Печатаем все старые сообщения"""
         for message in messages:
-            await self.send(text_data=json.dumps({
-                'message': message.text,
-                'psy': message.is_psy_author,
-                'date': message.date_time.strftime('%Y-%m-%d %H:%M:%S')
-            }))
+            await self.send(
+                self.format_message(
+                    message=message.text,
+                    date=message.date_time
+                )
+            )
 
     @database_sync_to_async
     def get_chat(self):
@@ -134,21 +123,25 @@ class ChatConsumer(ObserverModelInstanceMixin, GenericAsyncAPIConsumer):
     async def check_chat_access(self):
         """Проверка на доступ к чату, возвращаем причину отказа или None"""
         if not self.chat:
-            return 'Чата не существует'
+            return '1 Чата не существует'
         if not self.chat.active:
-            return 'Чат завершен'
-        if (self.chat.psychologist_id and
-            self.user and
-            self.chat.psychologist_id != self.user.id
-        ):
-            return 'Психолог уже есть'
-        if self.user and not self.user.approved_by_moderator:
-            return 'Дождитесь проверки документов'
-        if self.chat.connected_clients:
-            return 'В чате уже есть клиент'
+            return '2 Чат завершен'
+        if not self.user.is_anonymous and self.chat.psychologist_id and self.chat.psychologist_id != self.user.id:
+            return '3 Психолог уже есть'
+        if not self.user.is_anonymous and not self.user.approved_by_moderator:
+            return '4 Дождитесь проверки документов'
+        if self.user.is_anonymous and self.chat.connected_clients:
+            return '5 В чате уже есть клиент'
     
     async def send_error_message(self, error_message):
         """Отправка текста ошибки"""
-        await self.send(text_data=json.dumps({
-            'error_msg': error_message
-        }))
+        await self.send(self.format_message(error_message))
+
+    def format_message(self, error_message=None, message=None, date=None):
+        data = {
+            'error_msg': error_message,
+            'message': message,
+            'psy': not self.user.is_anonymous,
+            'date': date.strftime('%Y-%m-%d %H:%M:%S') if date else date
+        }
+        return json.dumps(data)

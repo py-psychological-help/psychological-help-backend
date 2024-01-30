@@ -25,6 +25,12 @@
         const chatSocket = new WebSocket(`ws://${window.location.host}/ws/chat/${chat_secret_key}/?token=${token}}`);
 
         chatSocket.onopen = function (e) {
+            // chatSocket.send(JSON.stringify({
+            //     action: 'list',
+            //     request_id: '2',
+            //     request: '1',
+            //     pk: chat_secret_key,
+            // }))
             console.log('WebSocket connection opened');
             console.log(chat_secret_key)
         };
