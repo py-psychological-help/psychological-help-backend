@@ -50,6 +50,7 @@ jobs:
         TEST_DOMAIN_NAME: letstalk.ru
         PROD_DOMAIN_NAME: davai.ru
       run: |
+        python backend/manage.py migrate
         python -m flake8 backend/
         pytest
 
