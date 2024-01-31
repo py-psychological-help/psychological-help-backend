@@ -9,7 +9,12 @@ from rest_framework.validators import UniqueValidator
 
 from users.models import Document, CustomClientUser
 from chats.models import Chat, Message
-from users.validators import (AlphanumericValidator, NameValidator)
+from users.validators import (AlphanumericValidator,
+                              EmailSymbolsValidator,
+                              NameSpacesValidator,
+                              NameSymbolsValidator,
+                              PasswordContentValidator,
+                              PasswordGroupsValidator)
 
 User = get_user_model()
 
@@ -85,18 +90,30 @@ class UserChatSerializer(serializers.ModelSerializer):
 class UserCreateSerializer(UserSerializer):
     """Сериализатор создания пользователей."""
 
-    email = serializers.EmailField(required=True,
-                                   max_length=settings.MAX_EMAIL_LEN,
-                                   validators=[AlphanumericValidator,
-                                               UniqueValidator])
+    email = serializers.EmailField(
+        required=True,
+        max_length=settings.MAX_EMAIL_LEN,
+        validators=[AlphanumericValidator,
+                    EmailSymbolsValidator,
+                    UniqueValidator(
+                        queryset=User.objects.all(),
+                        message='Пользователь с таким email уже существует')])
     first_name = serializers.CharField(required=True,
                                        max_length=settings.MAX_USER_LEN,
-                                       validators=[NameValidator])
+                                       validators=[NameSpacesValidator,
+                                                   NameSymbolsValidator, ])
     last_name = serializers.CharField(required=True,
                                       max_length=settings.MAX_USER_LEN,
-                                      validators=[NameValidator])
+                                      validators=[NameSpacesValidator,
+                                                  NameSymbolsValidator, ])
     approved = serializers.BooleanField(source='approved_by_moderator',
                                         read_only=True)
+    password = serializers.CharField(required=True,
+                                     min_length=8,
+                                     max_length=20,
+                                     write_only=True,
+                                     validators=[PasswordContentValidator,
+                                                 PasswordGroupsValidator, ])
 
     class Meta:
         model = User
@@ -110,14 +127,6 @@ class UserCreateSerializer(UserSerializer):
                             'first_name',
                             'last_name',
                             'approved')
-        extra_kwargs = {'password': {'write_only': True}, }
-
-    def validate_email(self, email):
-        """Валидация почты."""
-        if User.objects.filter(email=email):
-            raise serializers.ValidationError('Пользователь с таким email уже '
-                                              'существует')
-        return email
 
     def create(self, validated_data):
         """Переопределение create для хэширования паролей."""

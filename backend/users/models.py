@@ -8,7 +8,10 @@ from PIL import Image
 from .managers import CustomUserManager
 from .validators import (AlphanumericValidator,
                          birthday_validator,
-                         NameValidator,)
+                         EmailSymbolsValidator,
+                         NameSpacesValidator,
+                         NameSymbolsValidator,
+                         year_validator)
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
@@ -27,19 +30,22 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         max_length=50,
         blank=False,
         verbose_name='Имя',
-        validators=[NameValidator, ]
+        validators=[NameSpacesValidator,
+                    NameSymbolsValidator, ]
     )
     last_name = models.CharField(
         max_length=50,
         blank=False,
         verbose_name='Фамилия',
-        validators=[NameValidator, ]
+        validators=[NameSpacesValidator,
+                    NameSymbolsValidator, ]
     )
     patronymic = models.CharField(
         max_length=50,
         blank=True,
         verbose_name='Отчество',
-        validators=[NameValidator, ]
+        validators=[NameSpacesValidator,
+                    NameSymbolsValidator, ]
     )
     role = models.CharField(
         max_length=25,
@@ -53,7 +59,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
                               blank=False,
                               unique=True,
                               max_length=50,
-                              validators=[AlphanumericValidator, ])
+                              validators=[AlphanumericValidator,
+                                          EmailSymbolsValidator])
     birth_date = models.DateField(blank=True,
                                   null=True,
                                   validators=[birthday_validator, ])
@@ -131,25 +138,29 @@ class CustomClientUser(AbstractBaseUser):
         max_length=50,
         blank=True,
         verbose_name='Имя',
-        validators=[NameValidator, ])
+        validators=[NameSpacesValidator,
+                    NameSymbolsValidator, ])
 
     last_name = models.CharField(
         max_length=50,
         blank=True,
         verbose_name='Фамилия',
-        validators=[NameValidator, ])
+        validators=[NameSpacesValidator,
+                    NameSymbolsValidator, ])
 
     patronymic = models.CharField(
         max_length=50,
         blank=True,
         verbose_name='Отчество',
-        validators=[NameValidator, ])
+        validators=[NameSpacesValidator,
+                    NameSymbolsValidator, ])
 
     photo = models.ImageField(upload_to='photos/', blank=True)
     email = models.EmailField('email адрес',
                               blank=False,
                               unique=True,
-                              validators=[AlphanumericValidator, ])
+                              validators=[AlphanumericValidator,
+                                          EmailSymbolsValidator, ])
     birth_date = models.DateField(blank=True,
                                   null=True,
                                   validators=[birthday_validator, ])
