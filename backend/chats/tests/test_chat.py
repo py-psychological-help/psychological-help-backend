@@ -4,7 +4,7 @@ import pytest
 from django.core.exceptions import FieldDoesNotExist
 from rest_framework.test import APIClient
 
-from tests.conftest import DATETIMEFORMAT, Chat, CustomClientUser
+from chats.tests.conftest import DATETIMEFORMAT, Chat, CustomClientUser
 
 
 @pytest.fixture()
@@ -105,7 +105,7 @@ def test_chats_list_data(psy_client, psy_user, customer_user, chat, message):
                 'date_time': message.date_time.strftime(DATETIMEFORMAT),
                 'is_author_me': False,
                 'author': customer_user.id,
-            },]
+            }, ]
         }
     ]
     assert response.json() == expected_data, (
@@ -142,7 +142,7 @@ def test_chat_retrieve_data(
             'date_time': message.date_time.strftime(DATETIMEFORMAT),
             'is_author_me': False,
             'author': customer_user.id,
-        },]
+        }, ]
     }
     assert response.json() == expected_data, (
         f'Убедитесь, что GET-запрос к `{url}` возвращает корректные данные'

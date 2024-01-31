@@ -39,7 +39,6 @@ jobs:
         pip install PyYAML
     - name: Test with flake8 and django tests
       env:
-        env:
         POSTGRES_DB: django_db
         POSTGRES_USER: django_user
         POSTGRES_PASSWORD: django_password
@@ -49,6 +48,9 @@ jobs:
         SERVER_IP: 111.111.111.111
         TEST_DOMAIN_NAME: letstalk.ru
         PROD_DOMAIN_NAME: davai.ru
+        REDIS_HOST: redis://localhost:6379
+        CELERY_BROKER_URL: redis://localhost:6379
+        CELERY_RESULT_BACKEND: redis://localhost:6379
       run: |
         python backend/manage.py migrate
         python -m flake8 backend/
