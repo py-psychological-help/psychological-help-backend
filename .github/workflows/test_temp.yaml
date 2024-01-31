@@ -31,6 +31,7 @@ jobs:
         pip install flake8==6.0.0 flake8-isort==6.0.0
         pip install -r ./backend/requirements.txt 
         pip install -U pytest
+        pip install pytest-django
         pip install PyYAML
     - name: Test with flake8 and django tests
       env:
