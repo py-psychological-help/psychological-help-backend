@@ -1,28 +1,24 @@
-import datetime
 import json
-from typing import Union
 
-from asgiref.sync import sync_to_async
-from rest_framework.authtoken.models import Token
 from channels.db import database_sync_to_async
 from djangochannelsrestframework.generics import GenericAsyncAPIConsumer
-from djangochannelsrestframework import mixins
-from djangochannelsrestframework.observer.generics import (ObserverModelInstanceMixin, action)
-from djangochannelsrestframework.observer import model_observer
-from django.contrib.auth import get_user_model
 
 from .models import Chat, Message
 
-User = get_user_model()
 
-
-class ChatConsumer(
-    # ObserverModelInstanceMixin,
-    GenericAsyncAPIConsumer):
+class ChatConsumer(GenericAsyncAPIConsumer):
 
     async def connect(self):
+        """
+        Отрабатывает при коннекте
+
+        достаем данные и проверяем на доступность
+        если доступ не проходит выводим сообщение на фронт и отключаем сокет
+        """
         await self.accept()
-        self.chat_secret_key = self.scope['url_route']['kwargs']['chat_secret_key']
+        self.chat_secret_key = (
+            self.scope['url_route']['kwargs']['chat_secret_key']
+        )
         self.chat = await self.get_chat()
         self.room_group_name = 'chat_%s' % self.chat_secret_key
         self.user = self.scope['user']
@@ -32,7 +28,7 @@ class ChatConsumer(
         if error_message:
             await self.send_error_message(error_message)
             await self.close()
-            await super().disconnect(444)
+            await super().disconnect(4009)
 
         if self.user.is_anonymous:
             await self.set_connected_clients()
@@ -47,47 +43,39 @@ class ChatConsumer(
         await self.send_old_message(messages)
 
     async def receive(self, text_data):
-        """Формируем словарь и отправляем через функцию уаказанную в type"""
-        text_data_json = json.loads(text_data)
-        message = text_data_json['message']
-        
-        await self.save_message(message)
+        """Перенаправление текста сообщения в функцию указанную в type"""
         await self.channel_layer.group_send(
             self.room_group_name,
             {
                 'type': 'chat_message',
-                'message': message,
+                'text_data': text_data,
             }
         )
 
     async def chat_message(self, event):
-        # Отправка сообщения обратно через WebSocket
-        message = event['message']
-        text = self.format_message(message=message, date=datetime.datetime.now())
+        """Отправка сообщения обратно через WebSocket"""
+        message = await self.save_message(event['text_data'])
+        text = self.format_message(message=message)
         await self.send(text_data=text)
-    
 
     async def disconnect(self, code):
-        # if hasattr(self, "chat_subscribe"):
-        #     await self.remove_user_from_room(self.chat_subscribe)
-        #     await self.notify_users()
+        """При отключение убирает анонима из чата"""
         if self.user.is_anonymous:
             await self.set_connected_clients(disconnected=True)
         await super().disconnect(code)
 
-    
     @database_sync_to_async
     def get_messages(self):
-        return list(Message.objects.filter(chat=self.chat).order_by('date_time'))[-2:]
-    
+        """Получаем список сообщений связанные с чатом"""
+        return list(
+            Message.objects.filter(chat=self.chat).order_by('date_time')
+        )
+
     async def send_old_message(self, messages):
-        """Печатаем все старые сообщения"""
+        """Печатаем все старые сообщения при подключении"""
         for message in messages:
             await self.send(
-                self.format_message(
-                    message=message.text,
-                    date=message.date_time
-                )
+                self.format_message(message=message)
             )
 
     @database_sync_to_async
@@ -98,22 +86,30 @@ class ChatConsumer(
         except Chat.DoesNotExist:
             return False
         return chat
-    
+
     @database_sync_to_async
     def save_message(self, message):
         """Сохраняем сообщение в бд"""
-        message = Message(chat=self.chat, text=message, is_psy_author=bool(self.user))
+        message = Message(
+            chat=self.chat,
+            text=message,
+            is_psy_author=not self.user.is_anonymous
+        )
         message.save()
+        return message
 
     @database_sync_to_async
     def set_psy_in_chat(self):
         """Записываем психолга в чат"""
         self.chat.psychologist = self.user
         self.chat.save()
-    
+
     @database_sync_to_async
     def set_connected_clients(self, disconnected=False):
-        """Добавляет в модель клиента при подключении и убирает при отключении"""
+        """
+        Добавляет в модель клиента при подключении
+        убирает при отключении
+        """
         if disconnected:
             self.chat.connected_clients -= 1
         else:
@@ -126,22 +122,27 @@ class ChatConsumer(
             return '1 Чата не существует'
         if not self.chat.active:
             return '2 Чат завершен'
-        if not self.user.is_anonymous and self.chat.psychologist_id and self.chat.psychologist_id != self.user.id:
+        if (
+            not self.user.is_anonymous
+            and self.chat.psychologist_id
+            and self.chat.psychologist_id != self.user.id
+        ):
             return '3 Психолог уже есть'
         if not self.user.is_anonymous and not self.user.approved_by_moderator:
             return '4 Дождитесь проверки документов'
         if self.user.is_anonymous and self.chat.connected_clients:
             return '5 В чате уже есть клиент'
-    
+
     async def send_error_message(self, error_message):
         """Отправка текста ошибки"""
-        await self.send(self.format_message(error_message))
+        await self.send(self.format_message(error_message=error_message))
 
-    def format_message(self, error_message=None, message=None, date=None):
-        data = {
-            'error_msg': error_message,
-            'message': message,
-            'psy': not self.user.is_anonymous,
-            'date': date.strftime('%Y-%m-%d %H:%M:%S') if date else date
-        }
+    def format_message(self, message=None, error_message=None):
+        data = {'error_msg': error_message}
+        if message:
+            data.update({
+                'message': message.text,
+                'psy': message.is_psy_author,
+                'date': message.date_time.isoformat()
+            })
         return json.dumps(data)

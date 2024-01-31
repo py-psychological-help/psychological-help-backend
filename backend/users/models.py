@@ -48,7 +48,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     birth_date = models.DateField(blank=True,
                                   null=True,
                                   validators=[birthday_validator, ])
-    approved_by_moderator = models.BooleanField(blank=False, default=True)
+    approved_by_moderator = models.BooleanField(blank=False, default=False)
     is_reg_confirm_sent = models.BooleanField(default=False)
     is_approve_sent = models.BooleanField(default=False)
 
