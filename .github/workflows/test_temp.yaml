@@ -40,6 +40,8 @@ jobs:
         DB_HOST: 127.0.0.1
         DB_PORT: 5432
         SECRET_KEY: l*#!2d8ecy$ls$vd=yuz$3wh5g!e@s#z^t!tk_!#(y5+uzl^qm
+        TEST_DOMAIN_NAME: mock
+        PROD_DOMAIN_NAME: mock
       run: |
         python -m flake8 backend/
         pytest
