@@ -2,9 +2,8 @@ from http import HTTPStatus
 
 import pytest
 from django.core.exceptions import FieldDoesNotExist
-from rest_framework.test import APIClient
 
-from tests.conftest import DATETIMEFORMAT, Message
+from chats.tests.conftest import DATETIMEFORMAT, Message
 
 pytestmark = pytest.mark.django_db
 
