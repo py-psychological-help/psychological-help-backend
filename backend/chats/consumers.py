@@ -1,7 +1,7 @@
 import json
 
-from channels.db import database_sync_to_async
 from djangochannelsrestframework.generics import GenericAsyncAPIConsumer
+from channels.db import database_sync_to_async
 
 from .models import Chat, Message
 
@@ -27,8 +27,8 @@ class ChatConsumer(GenericAsyncAPIConsumer):
 
         if error_message:
             await self.send_error_message(error_message)
+            await super().disconnect(4099)
             await self.close()
-            await super().disconnect(4009)
 
         if self.user.is_anonymous:
             await self.set_connected_clients()
@@ -60,7 +60,10 @@ class ChatConsumer(GenericAsyncAPIConsumer):
 
     async def disconnect(self, code):
         """При отключение убирает анонима из чата"""
-        if self.user.is_anonymous:
+        if hasattr(self, "chat_subscribe"):
+            await self.remove_user_from_room(self.chat_subscribe)
+            await self.notify_users()
+        if self.chat and self.user.is_anonymous:
             await self.set_connected_clients(disconnected=True)
         await super().disconnect(code)
 
