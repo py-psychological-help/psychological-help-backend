@@ -2,7 +2,7 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from djoser.views import UserViewSet
 
-from .views import (UserMe, CustomClientUserViewSet, EducationViewSet,
+from .views import (UserMe, CustomClientUserViewSet, DocumentViewSet,
                     ChatViewSet, MessageViewSet, activate_chat, finish_chat)
 
 router = DefaultRouter()
@@ -15,9 +15,9 @@ router.register('users/clients',
                 CustomClientUserViewSet,
                 basename='clients',)
 
-router.register(r'users/psychologists/me/education',
-                EducationViewSet,
-                basename='education',)
+router.register(r'users/psychologists/me/documents',
+                DocumentViewSet,
+                basename='documents',)
 
 router.register(r'chats/(?P<chat_secret_key>[a-zA-Z0-9]+)/messages',
                 MessageViewSet,

@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.dispatch import receiver
 from django.db.models.signals import pre_save, post_save
 
-from core.emails import (send_education_confirm,
+from core.emails import (send_documents_confirm,
                          send_reg_confirm,
                          send_client_reg_confirm)
 from users.models import CustomClientUser
@@ -59,7 +59,7 @@ def chat_auto_create(sender, instance, created, **kwargs):
 def psychologist_notification(sender, instance, created, **kwargs):
     """Отправляет уведомления о регистрации и проверке документов."""
     if instance.approved_by_moderator and not instance.is_approve_sent:
-        send_education_confirm(instance)
+        send_documents_confirm(instance)
         instance.is_approve_sent = True
         instance.save()
 

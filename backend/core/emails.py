@@ -35,12 +35,12 @@ def send_client_reg_confirm(user):
     )
 
 
-def send_education_confirm(user):
+def send_documents_confirm(user):
     """Оправка уведомления о проверки документов."""
     last_name = user.last_name
     first_name = user.first_name
     send_email_task.delay(
-        'mail/education_confirm.html',
+        'mail/documents_confirm.html',
         {
             'last_name': last_name,
             'first_name': first_name,
