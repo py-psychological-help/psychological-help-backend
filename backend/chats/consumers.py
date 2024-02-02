@@ -113,6 +113,9 @@ class ChatConsumer(GenericAsyncAPIConsumer):
         Добавляет в модель клиента при подключении
         убирает при отключении
         """
+        if not self.chat:
+            return
+
         if disconnected:
             self.chat.connected_clients -= 1
         else:
