@@ -12,6 +12,7 @@ DOCKERFILE_NAME = 'Dockerfile'
 DOCKERHUB_USERNAME_KEY = 'dockerhub_username'
 DOCKER_COMPOSE_PROD_FILE_NAME = 'docker-compose.production.yml'
 
+
 for dir_name in (BACKEND_DIR_NAME, NGINX_DIR_NAME):
     path_to_dir = BASE_DIR / dir_name
     if not path_to_dir.is_dir():

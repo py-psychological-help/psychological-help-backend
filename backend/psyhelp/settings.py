@@ -38,6 +38,7 @@ ALLOWED_HOSTS = ['127.0.0.1',
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -55,6 +56,7 @@ INSTALLED_APPS = [
     'chats.apps.ChatsConfig',
     'users.apps.UsersConfig',
     'core.apps.CoreConfig',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -86,8 +88,17 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'psyhelp.wsgi.application'
+# WSGI_APPLICATION = 'psyhelp.wsgi.application'
+ASGI_APPLICATION = 'psyhelp.asgi.application'
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('redis', 6379)],  # убрать в енв
+        },
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
