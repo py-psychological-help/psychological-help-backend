@@ -24,10 +24,13 @@ class Chat(models.Model):
                                      db_index=True)
     active = models.BooleanField(default=True)
     chat_secret_key = models.CharField(max_length=50, blank=True)
-    connected_clients = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return str(self.client)
+
+    class Meta:
+        verbose_name = 'Чат'
+        verbose_name_plural = 'Чаты'
 
 
 class Message(models.Model):
@@ -40,4 +43,8 @@ class Message(models.Model):
     chat = models.ForeignKey(Chat,
                              on_delete=models.CASCADE,
                              related_name="messages")
-    is_psy_author = models.BooleanField(blank=False)
+    is_psy_author = models.BooleanField('Автор Психолог', blank=False)
+
+    class Meta:
+        verbose_name = 'Сообщение'
+        verbose_name_plural = 'Сообщения'
