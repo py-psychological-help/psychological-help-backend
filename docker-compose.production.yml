@@ -46,6 +46,7 @@ services:
     image: sergeyxx/psyhelp_backend
     command: celery -A psyhelp worker --loglevel info
     env_file: .env
+    restart: always
     volumes:
       - sent_emails:/app/sent_emails/
     depends_on:

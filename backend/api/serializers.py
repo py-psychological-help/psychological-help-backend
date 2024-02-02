@@ -5,9 +5,16 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.core.files.base import ContentFile
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 
-from users.models import Education, CustomClientUser
+from users.models import Document, CustomClientUser
 from chats.models import Chat, Message
+from users.validators import (AlphanumericValidator,
+                              EmailSymbolsValidator,
+                              NameSpacesValidator,
+                              NameSymbolsValidator,
+                              PasswordContentValidator,
+                              PasswordGroupsValidator)
 
 User = get_user_model()
 
@@ -25,13 +32,13 @@ class Base64ImageField(serializers.ImageField):
         return super().to_internal_value(data)
 
 
-class EducationSerializer(serializers.ModelSerializer):
-    """Сериализатор объектов Образования."""
+class DocumentSerializer(serializers.ModelSerializer):
+    """Сериализатор объектов Документы."""
 
     scan = Base64ImageField(required=True, allow_null=False)
 
     class Meta:
-        model = Education
+        model = Document
         fields = ('id',
                   'name',
                   'scan'
@@ -43,9 +50,8 @@ class UserSerializer(serializers.ModelSerializer):
     """Сериализатор отображения Пользователей."""
 
     photo = Base64ImageField(required=False, allow_null=True)
-    documents = EducationSerializer(source='education',
-                                    many=True,
-                                    read_only=True)
+    documents = DocumentSerializer(source='document', many=True,
+                                   read_only=True)
     approved = serializers.BooleanField(source='approved_by_moderator',
                                         read_only=True)
 
@@ -84,12 +90,30 @@ class UserChatSerializer(serializers.ModelSerializer):
 class UserCreateSerializer(UserSerializer):
     """Сериализатор создания пользователей."""
 
-    email = serializers.EmailField(required=True,
-                                   max_length=settings.MAX_EMAIL_LEN)
-    first_name = serializers.CharField(required=True)
-    last_name = serializers.CharField(required=True)
+    email = serializers.EmailField(
+        required=True,
+        max_length=settings.MAX_EMAIL_LEN,
+        validators=[AlphanumericValidator,
+                    EmailSymbolsValidator,
+                    UniqueValidator(
+                        queryset=User.objects.all(),
+                        message='Пользователь с таким email уже существует')])
+    first_name = serializers.CharField(required=True,
+                                       max_length=settings.MAX_USER_LEN,
+                                       validators=[NameSpacesValidator,
+                                                   NameSymbolsValidator, ])
+    last_name = serializers.CharField(required=True,
+                                      max_length=settings.MAX_USER_LEN,
+                                      validators=[NameSpacesValidator,
+                                                  NameSymbolsValidator, ])
     approved = serializers.BooleanField(source='approved_by_moderator',
                                         read_only=True)
+    password = serializers.CharField(required=True,
+                                     min_length=8,
+                                     max_length=20,
+                                     write_only=True,
+                                     validators=[PasswordContentValidator,
+                                                 PasswordGroupsValidator, ])
 
     class Meta:
         model = User
@@ -103,27 +127,6 @@ class UserCreateSerializer(UserSerializer):
                             'first_name',
                             'last_name',
                             'approved')
-        extra_kwargs = {'password': {'write_only': True}, }
-
-    def validate_email(self, email):
-        """Валидация почты."""
-        if User.objects.filter(email=email):
-            raise serializers.ValidationError('Пользователь с таким email уже '
-                                              'существует')
-        return email
-
-    def validate_first_name(self, first_name):
-        if len(first_name) > settings.MAX_USER_LEN:
-            raise serializers.ValidationError('Имя не может быть длиннее '
-                                              f'{settings.MAX_USER_LEN} '
-                                              'символов')
-        return first_name
-
-    def validate_last_name(self, last_name):
-        if len(last_name) > settings.MAX_USER_LEN:
-            raise serializers.ValidationError('Имя не может быть длиннее 150 '
-                                              'символов')
-        return last_name
 
     def create(self, validated_data):
         """Переопределение create для хэширования паролей."""
@@ -139,7 +142,6 @@ class ClientSerializer(serializers.ModelSerializer):
         fields = ('id',
                   'email',
                   'first_name',
-                  'last_name',
                   'complaint',
                   )
         read_only_fields = ('id',)

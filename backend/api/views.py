@@ -17,9 +17,9 @@ from rest_framework import status
 from chats.models import Chat
 from core.emails import send_chat_url
 from core.utils import get_chat_id
-from users.models import CustomClientUser, Education
+from users.models import CustomClientUser, Document
 from .serializers import (UserSerializer, ClientSerializer,
-                          EducationSerializer, ChatSerializer,
+                          DocumentSerializer, ChatSerializer,
                           MessageSerializer)
 from .filters import ChatFilter
 from .permissions import ApprovedByModerator
@@ -34,7 +34,6 @@ class UserMe(APIView):
     permission_classes = (IsAuthenticated,)
     http_method_names = ['get', 'post', 'put', 'patch', 'delete']
 
-    @method_decorator(cache_page(settings.CACHE_TTL))
     def get(self, request):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
@@ -55,9 +54,7 @@ class UserMe(APIView):
 
     def delete(self, request, *args, **kwargs):
         request.user.delete()
-        response_message = {'message': "Ваш профиль удален."}
-        return Response(response_message,
-                        status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class CustomClientUserViewSet(viewsets.ModelViewSet):
@@ -69,16 +66,15 @@ class CustomClientUserViewSet(viewsets.ModelViewSet):
     permission_classes = (AllowAny,)
 
 
-class EducationViewSet(viewsets.ModelViewSet):
+class DocumentViewSet(viewsets.ModelViewSet):
     """Эндпоинт для просмотра списка, добавления и удаления сертификатов."""
 
-    queryset = Education.objects.all()
-    serializer_class = EducationSerializer
+    queryset = Document.objects.all()
+    serializer_class = DocumentSerializer
     http_method_names = ['get', 'post', 'delete']
     permission_classes = (IsAuthenticated,)
     pagination_class = None
 
-    @method_decorator(cache_page(settings.CACHE_TTL))
     def list(self, request, *args, **kwargs):
         psychologist = request.user
         queryset = self.queryset.filter(user=psychologist)
@@ -92,6 +88,11 @@ class EducationViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    def perform_destroy(self, instance):
+        if instance.user == self.request.user:
+            return super().perform_destroy(instance)
+        raise PermissionDenied("Нельзя удалить чужой документ!")
+
 
 class ChatViewSet(viewsets.ModelViewSet):
     """Вьюшка просмотра чата, списка и удаления."""
@@ -104,7 +105,6 @@ class ChatViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filterset_class = ChatFilter
 
-    @method_decorator(cache_page(settings.CACHE_TTL))
     def retrieve(self, request, *args, **kwargs):
         chat_secret_key = self.kwargs.get('pk')
         chat_id = get_chat_id(chat_secret_key)
@@ -127,7 +127,6 @@ class MessageViewSet(viewsets.ModelViewSet):
     permission_classes = (AllowAny,)
     pagination_class = None
 
-    @method_decorator(cache_page(settings.CACHE_TTL))
     def get_queryset(self):
         chat_secret_key = self.kwargs.get('chat_secret_key')
         chat_id = get_chat_id(chat_secret_key)
