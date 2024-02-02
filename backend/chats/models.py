@@ -29,6 +29,10 @@ class Chat(models.Model):
     def __str__(self):
         return str(self.client)
 
+    class Meta:
+        verbose_name = 'Чат'
+        verbose_name_plural = 'Чаты'
+
 
 class Message(models.Model):
     """Модель сообщейний."""
@@ -41,3 +45,7 @@ class Message(models.Model):
                              on_delete=models.CASCADE,
                              related_name="messages")
     is_psy_author = models.BooleanField(blank=False)
+
+    class Meta:
+        verbose_name = 'Сообщение'
+        verbose_name_plural = 'Сообщения'
