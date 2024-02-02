@@ -29,9 +29,7 @@ router.register('chats',
                 ChatViewSet,
                 basename='chats')
 
-from chats import views
 urlpatterns = [
-    path('test/', views.test),
     path('users/psychologists/me/', UserMe.as_view()),
 
     path('chats/<str:chat_secret_key>/start/',
