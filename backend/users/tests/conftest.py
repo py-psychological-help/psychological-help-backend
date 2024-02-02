@@ -1,5 +1,6 @@
 import pytest
 from rest_framework.test import APIClient
+from django.core.files.images import ImageFile
 
 try:
     from users.models import CustomClientUser
@@ -25,6 +26,8 @@ except (NameError, ImportError):
         'Она должна находиться в модуле `backend.users.models`'
     )
 
+from django.conf import settings
+from django.core.files.base import ContentFile
 
 @pytest.fixture()
 def psy_user(db, django_user_model):
@@ -53,10 +56,17 @@ def psy_auth_user(psy_user):
 
 
 @pytest.fixture()
-def document(db, django_user_model):
+def document(db, django_user_model, psy_user):
     """Фикстура Документа."""
-    
-    document = Document.objects.create()
-    
-    
-    return 
+    image_path = settings.BASE_DIR / 'users' / 'tests' / 'flower.jpg'
+    # print(image_path)
+    image = open(image_path, 'rb')
+    print(image.read())
+    # django_image = ImageFile(image)
+    # document = Document()
+    # document.scan = django_image
+    # document.user = psy_user
+    # document.save()
+    image.close()
+
+    return document
