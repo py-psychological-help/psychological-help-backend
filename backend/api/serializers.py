@@ -14,7 +14,8 @@ from users.validators import (AlphanumericValidator,
                               NameSpacesValidator,
                               NameSymbolsValidator,
                               PasswordContentValidator,
-                              PasswordGroupsValidator)
+                              PasswordGroupsValidator,
+                              birthday_validator)
 
 User = get_user_model()
 
@@ -54,6 +55,10 @@ class UserSerializer(serializers.ModelSerializer):
                                    read_only=True)
     approved = serializers.BooleanField(source='approved_by_moderator',
                                         read_only=True)
+    birth_date = serializers.DateField(
+        format=settings.BIRTH_DATE_FORMAT,
+        read_only=True
+    )
 
     class Meta:
         fields = ('id',
@@ -73,6 +78,10 @@ class UserChatSerializer(serializers.ModelSerializer):
     """Вложенный в чат сериализатор пользователей."""
 
     photo = Base64ImageField(required=False, allow_null=True)
+    birth_date = serializers.DateField(
+        format=settings.BIRTH_DATE_FORMAT,
+        read_only=True
+    )
 
     class Meta:
         fields = ('first_name',
@@ -114,6 +123,12 @@ class UserCreateSerializer(UserSerializer):
                                      write_only=True,
                                      validators=[PasswordContentValidator,
                                                  PasswordGroupsValidator, ])
+    birth_date = serializers.DateField(
+        required=True,
+        validators=[birthday_validator],
+        input_formats=[settings.BIRTH_DATE_FORMAT],
+        format=settings.BIRTH_DATE_FORMAT
+    )
 
     class Meta:
         model = User
@@ -122,7 +137,8 @@ class UserCreateSerializer(UserSerializer):
                   'first_name',
                   'last_name',
                   'password',
-                  'approved')
+                  'approved',
+                  'birth_date')
         read_only_fields = ('id',
                             'first_name',
                             'last_name',
