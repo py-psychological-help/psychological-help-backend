@@ -153,4 +153,4 @@ class ChatConsumer(GenericAsyncAPIConsumer):
             'psy': message.is_psy_author,
             'date': message.date_time.isoformat()
         })
-        return json.dumps(data)
+        return json.dumps(data, ensure_ascii=False)
