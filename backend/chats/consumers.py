@@ -129,8 +129,13 @@ class ChatConsumer(GenericAsyncAPIConsumer):
             and self.chat.psychologist_id != self.user.id
         ):
             await self.send_error_and_closed_chat(4006, 'Psychologist in caht')
-        elif not self.user.is_anonymous and not self.user.approved_by_moderator:
-            await self.send_error_and_closed_chat(4007, 'Documents not verifield')
+        elif (
+            not self.user.is_anonymous
+            and not self.user.approved_by_moderator
+        ):
+            await self.send_error_and_closed_chat(
+                4007, 'Documents not verifield'
+            )
         elif self.user.is_anonymous and self.chat.connected_clients:
             await self.send_error_and_closed_chat(4008, 'Client in chat')
 

@@ -8,7 +8,6 @@ from channels.middleware import BaseMiddleware
 def get_user(token):
     """
     Получение user по токену
-    
     Токен с фронта и постмана отличается
     от этого такая реализация
     """
