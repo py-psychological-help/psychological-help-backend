@@ -124,7 +124,7 @@ class UserCreateSerializer(UserSerializer):
                                      validators=[PasswordContentValidator,
                                                  PasswordGroupsValidator, ])
     birth_date = serializers.DateField(
-        required=False,
+        required=True,
         validators=[birthday_validator],
         input_formats=[settings.BIRTH_DATE_FORMAT],
         format=settings.BIRTH_DATE_FORMAT
