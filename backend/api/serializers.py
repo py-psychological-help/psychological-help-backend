@@ -55,6 +55,10 @@ class UserSerializer(serializers.ModelSerializer):
                                    read_only=True)
     approved = serializers.BooleanField(source='approved_by_moderator',
                                         read_only=True)
+    birth_date = serializers.DateField(
+        format=settings.BIRTH_DATE_FORMAT,
+        read_only=True
+    )
 
     class Meta:
         fields = ('id',
@@ -74,6 +78,10 @@ class UserChatSerializer(serializers.ModelSerializer):
     """Вложенный в чат сериализатор пользователей."""
 
     photo = Base64ImageField(required=False, allow_null=True)
+    birth_date = serializers.DateField(
+        format=settings.BIRTH_DATE_FORMAT,
+        read_only=True
+    )
 
     class Meta:
         fields = ('first_name',
@@ -118,6 +126,9 @@ class UserCreateSerializer(UserSerializer):
     birth_date = serializers.DateField(required=True,
                                        validators=[birthday_validator, ])
 
+    birth_date = serializers.DateField(required=True,
+                                       validators=[birthday_validator, ])
+
     class Meta:
         model = User
         fields = ('id',
@@ -126,7 +137,8 @@ class UserCreateSerializer(UserSerializer):
                   'last_name',
                   'birth_date',
                   'password',
-                  'approved')
+                  'approved',
+                  'birth_date')
         read_only_fields = ('id',
                             'first_name',
                             'last_name',
