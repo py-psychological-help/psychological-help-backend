@@ -6,7 +6,16 @@ from channels.middleware import BaseMiddleware
 
 @database_sync_to_async
 def get_user(token):
-    """Получение user по токену"""
+    """
+    Получение user по токену
+    Токен с фронта и постмана отличается
+    от этого такая реализация
+    """
+    try:
+        token_obj = Token.objects.get(key=token)
+        return token_obj.user
+    except Token.DoesNotExist:
+        token = token[:-1]
     try:
         token_obj = Token.objects.get(key=token)
         return token_obj.user
@@ -35,6 +44,6 @@ class TokenAuthMiddleware(BaseMiddleware):
             token_key = None
         user = AnonymousUser()
         if token_key:
-            user = await get_user(token_key[:-1])
+            user = await get_user(token_key)
         scope['user'] = user
         return await super().__call__(scope, receive, send)
