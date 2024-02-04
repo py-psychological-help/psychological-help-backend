@@ -23,12 +23,7 @@ class ChatConsumer(GenericAsyncAPIConsumer):
         self.room_group_name = 'chat_%s' % self.chat_secret_key
         self.user = self.scope['user']
 
-        error_message = await self.check_chat_access()
-
-        if error_message:
-            await self.send_error_message(error_message)
-            await super().disconnect(4099)
-            await self.close()
+        await self.check_chat_access()
 
         if self.user.is_anonymous:
             await self.set_connected_clients()
@@ -104,8 +99,9 @@ class ChatConsumer(GenericAsyncAPIConsumer):
     @database_sync_to_async
     def set_psy_in_chat(self):
         """Записываем психолга в чат"""
-        self.chat.psychologist = self.user
-        self.chat.save()
+        if self.user.approved_by_moderator:
+            self.chat.psychologist = self.user
+            self.chat.save()
 
     @database_sync_to_async
     def set_connected_clients(self, disconnected=False):
@@ -115,7 +111,6 @@ class ChatConsumer(GenericAsyncAPIConsumer):
         """
         if not self.chat:
             return
-
         if disconnected:
             self.chat.connected_clients -= 1
         else:
@@ -123,32 +118,39 @@ class ChatConsumer(GenericAsyncAPIConsumer):
         self.chat.save()
 
     async def check_chat_access(self):
-        """Проверка на доступ к чату, возвращаем причину отказа или None"""
+        """Проверка на доступ к чату и закрываем при отказе"""
         if not self.chat:
-            return '1 Чата не существует'
-        if not self.chat.active:
-            return '2 Чат завершен'
-        if (
+            await self.send_error_and_closed_chat(4004, 'Not found chat')
+        elif not self.chat.active:
+            await self.send_error_and_closed_chat(4005, 'Chat closed')
+        elif (
             not self.user.is_anonymous
             and self.chat.psychologist_id
             and self.chat.psychologist_id != self.user.id
         ):
-            return '3 Психолог уже есть'
-        if not self.user.is_anonymous and not self.user.approved_by_moderator:
-            return '4 Дождитесь проверки документов'
-        if self.user.is_anonymous and self.chat.connected_clients:
-            return '5 В чате уже есть клиент'
+            await self.send_error_and_closed_chat(4006, 'Psychologist in caht')
+        elif (
+            not self.user.is_anonymous
+            and not self.user.approved_by_moderator
+        ):
+            await self.send_error_and_closed_chat(
+                4007, 'Documents not verifield'
+            )
+        elif self.user.is_anonymous and self.chat.connected_clients:
+            await self.send_error_and_closed_chat(4008, 'Client in chat')
 
-    async def send_error_message(self, error_message):
-        """Отправка текста ошибки"""
-        await self.send(self.format_message(error_message=error_message))
+    async def send_error_and_closed_chat(self, code, error_message):
+        """Отправка текста ошибки и закрытие чата"""
+        await self.send(text_data=json.dumps({
+            'error': error_message
+        }))
+        await super().disconnect(code)
+        await self.close(code=code)
 
-    def format_message(self, message=None, error_message=None):
-        data = {'error_msg': error_message}
-        if message:
-            data.update({
-                'message': message.text,
-                'psy': message.is_psy_author,
-                'date': message.date_time.isoformat()
-            })
-        return json.dumps(data)
+    def format_message(self, message):
+        data = ({
+            'message': message.text,
+            'psy': message.is_psy_author,
+            'date': message.date_time.isoformat()
+        })
+        return json.dumps(data, ensure_ascii=False)
