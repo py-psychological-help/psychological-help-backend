@@ -123,12 +123,8 @@ class UserCreateSerializer(UserSerializer):
                                      write_only=True,
                                      validators=[PasswordContentValidator,
                                                  PasswordGroupsValidator, ])
-    birth_date = serializers.DateField(
-        required=True,
-        validators=[birthday_validator],
-        input_formats=[settings.BIRTH_DATE_FORMAT],
-        format=settings.BIRTH_DATE_FORMAT
-    )
+    birth_date = serializers.DateField(required=True,
+                                       validators=[birthday_validator, ])
 
     class Meta:
         model = User
@@ -136,9 +132,10 @@ class UserCreateSerializer(UserSerializer):
                   'email',
                   'first_name',
                   'last_name',
+                  'birth_date',
                   'password',
                   'approved',
-                  'birth_date')
+                  )
         read_only_fields = ('id',
                             'first_name',
                             'last_name',
