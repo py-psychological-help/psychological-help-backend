@@ -135,7 +135,7 @@ class UserCreateSerializer(UserSerializer):
                   'birth_date',
                   'password',
                   'approved',
-                  'birth_date')
+                  )
         read_only_fields = ('id',
                             'first_name',
                             'last_name',
