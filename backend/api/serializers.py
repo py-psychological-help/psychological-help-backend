@@ -126,7 +126,6 @@ class UserCreateSerializer(UserSerializer):
     birth_date = serializers.DateField(required=True,
                                        validators=[birthday_validator, ])
 
-
     class Meta:
         model = User
         fields = ('id',
