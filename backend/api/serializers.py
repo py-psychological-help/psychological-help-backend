@@ -55,10 +55,7 @@ class UserSerializer(serializers.ModelSerializer):
                                    read_only=True)
     approved = serializers.BooleanField(source='approved_by_moderator',
                                         read_only=True)
-    birth_date = serializers.DateField(
-        format=settings.BIRTH_DATE_FORMAT,
-        read_only=True
-    )
+    birth_date = serializers.DateField(read_only=True)
 
     class Meta:
         fields = ('id',
@@ -79,7 +76,6 @@ class UserChatSerializer(serializers.ModelSerializer):
 
     photo = Base64ImageField(required=False, allow_null=True)
     birth_date = serializers.DateField(
-        format=settings.BIRTH_DATE_FORMAT,
         read_only=True
     )
 
