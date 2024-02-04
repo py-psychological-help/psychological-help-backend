@@ -14,7 +14,8 @@ from users.validators import (AlphanumericValidator,
                               NameSpacesValidator,
                               NameSymbolsValidator,
                               PasswordContentValidator,
-                              PasswordGroupsValidator)
+                              PasswordGroupsValidator,
+                              birthday_validator)
 
 User = get_user_model()
 
@@ -114,6 +115,8 @@ class UserCreateSerializer(UserSerializer):
                                      write_only=True,
                                      validators=[PasswordContentValidator,
                                                  PasswordGroupsValidator, ])
+    birth_date = serializers.DateField(required=True,
+                                       validators=[birthday_validator, ])
 
     class Meta:
         model = User
@@ -121,6 +124,7 @@ class UserCreateSerializer(UserSerializer):
                   'email',
                   'first_name',
                   'last_name',
+                  'birth_date',
                   'password',
                   'approved')
         read_only_fields = ('id',
