@@ -194,6 +194,8 @@ REST_FRAMEWORK = {
 PAGE_SIZE = 6
 
 DJOSER = {
+    'SEND_ACTIVATION_EMAIL': True,
+    'ACTIVATION_URL': 'activate/{uid}/{token}/',
     'SERIALIZERS': {
         'user': 'api.serializers.UserSerializer',
         'user_list': 'api.serializers.UserSerializer',
@@ -216,18 +218,21 @@ CORS_ALLOWED_ORIGINS = [
     'http://' + os.getenv('PROD_DOMAIN_NAME'),
     'https://' + os.getenv('PROD_DOMAIN_NAME'),
 ]
-
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+if os.getenv('EMAIL_BACKEND') == 'SMTP':
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+print(EMAIL_BACKEND)
 EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
 SERVER_EMAIL = 'from@example.com'
 
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.getenv('EMAIL_HOST')
 EMAIL_USE_TLS = False
 EMAIL_PORT = 465
 EMAIL_USE_SSL = True
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
