@@ -252,4 +252,5 @@ COMPRESS_IMAGE = True
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
-CACHE_TTL = 60  # время хранение кеша в секундах
+CACHE_TTL = 1  # время хранение кеша в секундах
+LIMIT_MESSAGES = os.getenv('LIMIT_MESSAGES')
