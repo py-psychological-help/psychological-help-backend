@@ -1,6 +1,7 @@
 import json
 
 from djangochannelsrestframework.generics import GenericAsyncAPIConsumer
+from djangochannelsrestframework.observer.generics import action
 from channels.db import database_sync_to_async
 
 from .models import Chat, Message
@@ -38,20 +39,23 @@ class ChatConsumer(GenericAsyncAPIConsumer):
         await self.send_old_message(messages)
 
     async def receive(self, text_data):
-        """Перенаправление текста сообщения в функцию указанную в type"""
+        """
+        Сохраняем сообщение и пернаправляем данные для отправки
+        в функцию указанную в "type"
+        """
+        message = await self.save_message(text_data)
+        text = self.format_message(message)
         await self.channel_layer.group_send(
             self.room_group_name,
             {
                 'type': 'chat_message',
-                'text_data': text_data,
+                'text': text
             }
         )
 
     async def chat_message(self, event):
         """Отправка сообщения обратно через WebSocket"""
-        message = await self.save_message(event['text_data'])
-        text = self.format_message(message=message)
-        await self.send(text_data=text)
+        await self.send(text_data=event['text'])
 
     async def disconnect(self, code):
         """При отключение убирает анонима из чата"""
@@ -154,3 +158,15 @@ class ChatConsumer(GenericAsyncAPIConsumer):
             'date': message.date_time.isoformat()
         })
         return json.dumps(data, ensure_ascii=False)
+
+    @action()
+    async def archive_chat(self):
+        await self.chat_not_active()
+        await self.send(text_data=json.dumps({
+            'message': 'chat is closed'
+        }))
+
+    @database_sync_to_async
+    def chat_not_active(self):
+        self.chat.active = False
+        self.chat.save()
