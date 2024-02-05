@@ -45,6 +45,9 @@ urlpatterns = [
     path('auth/',
          include('djoser.urls.authtoken')),
 
+    path('auth/',
+         include('djoser.urls')),
+
     path('users/psychologists/', UserViewSet.as_view({'get': 'list',
                                                       'post': 'create'}),),
 ]
