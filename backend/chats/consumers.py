@@ -38,20 +38,31 @@ class ChatConsumer(GenericAsyncAPIConsumer):
         await self.send_old_message(messages)
 
     async def receive(self, text_data):
-        """Перенаправление текста сообщения в функцию указанную в type"""
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                'type': 'chat_message',
-                'text_data': text_data,
-            }
-        )
+        """
+        Сохраняем сообщение и пернаправляем данные для отправки
+        в функцию указанную в "type"
+        Если прилетает JSON {"action": "archive_chat"}
+        закрывем соединение и переводим статус чата в неативное
+        """
+        try:
+            data = json.loads(text_data)
+            action = data.get('action')
+            if action == 'archive_chat':
+                await self.archive_chat()
+        except json.decoder.JSONDecodeError:
+            message = await self.save_message(text_data)
+            text = self.format_message(message)
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'chat_message',
+                    'text': text
+                }
+            )
 
     async def chat_message(self, event):
         """Отправка сообщения обратно через WebSocket"""
-        message = await self.save_message(event['text_data'])
-        text = self.format_message(message=message)
-        await self.send(text_data=text)
+        await self.send(text_data=event['text'])
 
     async def disconnect(self, code):
         """При отключение убирает анонима из чата"""
@@ -154,3 +165,23 @@ class ChatConsumer(GenericAsyncAPIConsumer):
             'date': message.date_time.isoformat()
         })
         return json.dumps(data, ensure_ascii=False)
+
+    async def archive_chat(self):
+        """Переводим чат в неактивные и закрываем соединения"""
+        await self.chat_not_active()
+        await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'chat_message',
+                    'text': json.dumps(
+                        {'message': 'Chat in closed'}, ensure_ascii=False
+                    )
+                }
+        )
+        await super().disconnect(1000)
+        await self.close()
+
+    @database_sync_to_async
+    def chat_not_active(self):
+        self.chat.active = False
+        self.chat.save()

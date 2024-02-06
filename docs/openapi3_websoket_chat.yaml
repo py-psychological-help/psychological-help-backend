@@ -1,0 +1,93 @@
+openapi: 3.0.0
+info:
+  title: WebsocketChat
+  version: 1.0.0
+  description: Для тестирования чата используйте Postman, swagger работает только с http запросами. Пример подключения "ws://letstalk.ddns.net:8011/ws/chat/caht_seret_key/?token=token_psychologist"
+paths:
+  ws/chat/{caht_secret_key}/:
+    get:
+      parameters:
+        - name: caht_secret_key
+          in: path
+          description: Секретный ключ чата
+          required: true
+          type: string
+        - name: token
+          in: query
+          description: Токен психолога опционально
+          required: false
+          type: string
+      responses:
+        101:
+          description: Switching Protocols (успешное подключение), если в чате есть сообщения то происходит их выгрузка
+          content:
+            application/json:
+              examples:
+                example1:
+                  value: 
+                    - message: "text 1"
+                      psy: true
+                      date: "2022-01-01T12:00:00Z"
+                    - message: "text 2"
+                      psy: false
+                      date: "2022-01-01T12:05:00Z"
+        4004:
+          description: чат не найден
+          content:
+            application/json:
+              example:
+                  error: "Not found chat"
+        4005:
+          description: чат не активен (завершен)
+          content:
+            application/json:
+              example:
+                  error: "Chat closed"
+        4006:
+          description: В чате уже есть психолог
+          content:
+            application/json:
+              example:
+                  error: "Psychologist in caht"
+        4007:
+          description: Психолог не подтвержден модератером
+          content:
+            application/json:
+              example:
+                  error: "Documents not verifield"
+        4008:
+          description: В чате есть клиент
+          content:
+            application/json:
+              example:
+                  error: "Client in chat"
+    post:
+      requestBody:
+        description: Отправка сообщения только текстом, для закрытия чата отправляется JSON {"action":"archive_chat"}
+        required: true
+        content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              examples:
+                закрытие чата:
+                  value: 
+                    actions: "archive_chat"
+            
+      responses:
+        200:
+          description: Message received
+          content:
+            application/json:
+              examples:
+                example1:
+                  value: 
+                    message: "string"
+                    psy: true
+                    date: "2022-01-01T12:00:00Z"
+                example2:
+                  value: 
+                    message: Chat in closed
+                    
+                
