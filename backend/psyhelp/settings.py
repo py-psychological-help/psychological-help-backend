@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
 import redis
@@ -186,26 +187,35 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 100
 }
+
+# SIMPLE_JWT = {
+    # 'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    # 'AUTH_HEADER_TYPES': ('Bearer',),
+# }
+
 PAGE_SIZE = 6
 
 DJOSER = {
     'SEND_ACTIVATION_EMAIL': True,
-    'ACTIVATION_URL': 'activate/{uid}/{token}/',
+    'ACTIVATION_URL': 'api/v1/activate/{uid}/{token}/',
+    'TOKEN_MODEL': 'rest_framework.authtoken.models.Token',
     'SERIALIZERS': {
         'user': 'api.serializers.UserSerializer',
         'user_list': 'api.serializers.UserSerializer',
-        'user_create': 'api.serializers.UserCreateSerializer', },
+        'user_create': 'api.serializers.UserCreateSerializer',
+        'activation': 'djoser.serializers.ActivationSerializer', },
     'LOGIN_FIELD': 'email',
     'PERMISSIONS': {
         'user': ['rest_framework.permissions.IsAuthenticated'],
         'user_list': ['api.permissions.IsModeratorOrAdmin'], },
     'HIDE_USERS': False,
-    'PASSWORD_RESET_CONFIRM_URL': 'reset-confirmation/{uid}/{token}/',
+    'PASSWORD_RESET_CONFIRM_URL': '#/reset-confirmation/{uid}/{token}/',
     'PASSWORD_CHANGED_EMAIL_CONFIRMATION': 'True',
 }
 
@@ -219,11 +229,11 @@ CORS_ALLOWED_ORIGINS = [
     'https://' + os.getenv('PROD_DOMAIN_NAME'),
 ]
 
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
 SERVER_EMAIL = 'from@example.com'
 
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.getenv('EMAIL_HOST')
 EMAIL_USE_TLS = False
 EMAIL_PORT = 465
