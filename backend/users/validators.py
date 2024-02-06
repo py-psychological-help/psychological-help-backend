@@ -36,7 +36,7 @@ EmailSymbolsValidator = RegexValidator(
      'и символом нижнего подчеркивания'))
 
 
-NameSymbolsValidator = RegexValidator(r"^[^- ][а-яА-ЯёЁ\s-]+[^- ]$",
+NameSymbolsValidator = RegexValidator(r"^[а-яА-ЯёЁ]+(?:[- ]?[а-яА-ЯёЁ]+)*$",
                                       ('Разрешены только буквы русского '
                                        'алфавита, дефис, и символ пробела. '
                                        'Дефисы и пробелы не могут находиться '

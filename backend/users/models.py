@@ -79,7 +79,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         default=False,
         help_text=('Designates whether the user can log into this admin '
                    'site.'))
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
     confirmation_code = models.CharField(max_length=5, blank=True)
     greeting = models.TextField('Приветственное сообщение', blank=True)
