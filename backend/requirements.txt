@@ -9,6 +9,7 @@ autobahn==23.6.2
 Automat==22.10.0
 beautifulsoup4==4.11.2
 billiard==4.2.0
+bleach==6.1.0
 cachetools==4.2.2
 celery==5.3.6
 certifi==2023.7.22
@@ -48,6 +49,7 @@ djangorestframework-simplejwt==4.7.2
 djlint==1.19.16
 djoser==2.1.0
 dnspython==2.4.2
+drf_api_logger==1.1.15
 EditorConfig==0.12.3
 eventlet==0.34.3
 exceptiongroup==1.1.1
@@ -133,6 +135,7 @@ tomli==2.0.1
 tornado==6.3.3
 tqdm==4.65.0
 Twisted==23.10.0
+twisted-iocpsupport==1.0.4
 txaio==23.1.1
 typing_extensions==4.7.1
 tzdata==2023.3
@@ -141,6 +144,7 @@ uritemplate==4.1.1
 urllib3==1.26.16
 vine==5.1.0
 wcwidth==0.1.8
+webencodings==0.5.1
 xmltodict==0.13.0
 yagmail==0.15.293
 zipfile36==0.1.3
