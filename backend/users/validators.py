@@ -16,11 +16,16 @@ def year_validator(value):
 
 def birthday_validator(value):
     """Валидация дня рождения для моделей Пользователей."""
-    age = (date.today() - value).days / 365
+    today = date.today()
+    age = today.year - value.year - (
+        (today.month, today.day) < (value.month, value.day)
+    )
     if age < 18:
         raise ValidationError('Вам должно быть более 18 лет для регистрации!')
     if age > 200:
         raise ValidationError('Возраст не может быть более 200 лет!')
+    if value.year < 1930:
+        raise ValidationError('Возраст вне диапазона')
 
 
 AlphanumericValidator = RegexValidator(
