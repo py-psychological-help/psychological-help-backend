@@ -42,14 +42,14 @@ class UserMe(APIView):
         user = request.user
         serializer = UserSerializer(user, data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializer.save(approved_by_moderator=False)
         return self.get(request)
 
     def patch(self, request):
         user = request.user
         serializer = UserSerializer(user, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializer.save(approved_by_moderator=False)
         return self.get(request)
 
     def delete(self, request, *args, **kwargs):

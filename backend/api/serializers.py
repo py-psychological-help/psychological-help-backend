@@ -116,6 +116,7 @@ class UserCreateSerializer(UserSerializer):
                                      min_length=8,
                                      max_length=20,
                                      write_only=True,
+                                     trim_whitespace=False,
                                      validators=[PasswordContentValidator,
                                                  PasswordGroupsValidator, ])
     birth_date = serializers.DateField(required=True,

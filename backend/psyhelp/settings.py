@@ -258,7 +258,12 @@ COMPRESS_IMAGE = True
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 CACHE_TTL = 1  # время хранение кеша в секундах
+
 LIMIT_MESSAGES = os.getenv('LIMIT_MESSAGES')
 
 DRF_API_LOGGER_DATABASE = True  # сохранение логов в бд
 DRF_API_LOGGER_STATUS_CODES = [500]  # список статусов которые будут логироваться
+
+
+# количество последних сообщений вложенных в чат
+LIMIT_MESSAGES = 2
