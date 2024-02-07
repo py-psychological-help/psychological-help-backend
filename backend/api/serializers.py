@@ -55,7 +55,6 @@ class UserSerializer(serializers.ModelSerializer):
                                    read_only=True)
     approved = serializers.BooleanField(source='approved_by_moderator',
                                         read_only=True)
-    birth_date = serializers.DateField(read_only=True)
 
     class Meta:
         fields = ('id',
@@ -117,6 +116,7 @@ class UserCreateSerializer(UserSerializer):
                                      min_length=8,
                                      max_length=20,
                                      write_only=True,
+                                     trim_whitespace=False,
                                      validators=[PasswordContentValidator,
                                                  PasswordGroupsValidator, ])
     birth_date = serializers.DateField(required=True,
@@ -177,13 +177,13 @@ class MessageSerializer(serializers.ModelSerializer):
         model = Message
 
     def get_is_author_me(self, message):
-        request_user = self.context.get('request').user
-        if request_user.is_anonymous:
+        request = self.context.get('request')
+        if not request or request.user.is_anonymous:
             return not message.is_psy_author
         author = None
         if message.is_psy_author:
             author = message.chat.psychologist
-        return author == request_user
+        return author == request.user
 
     def get_author(self, message):
         if message.is_psy_author:
@@ -214,3 +214,13 @@ class ChatSerializer(serializers.ModelSerializer):
 
     def get_new(self, chat):
         return chat.psychologist is None
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        last_messages = (
+            instance.messages.order_by('-id')[:int(settings.LIMIT_MESSAGES)]
+        )
+        representation['messages'] = MessageSerializer(
+            last_messages, many=True
+        ).data
+        return representation

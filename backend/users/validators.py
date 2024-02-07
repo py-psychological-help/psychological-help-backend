@@ -16,11 +16,16 @@ def year_validator(value):
 
 def birthday_validator(value):
     """Валидация дня рождения для моделей Пользователей."""
-    age = (date.today() - value).days / 365
+    today = date.today()
+    age = today.year - value.year - (
+        (today.month, today.day) < (value.month, value.day)
+    )
     if age < 18:
         raise ValidationError('Вам должно быть более 18 лет для регистрации!')
     if age > 200:
         raise ValidationError('Возраст не может быть более 200 лет!')
+    if value.year < 1930:
+        raise ValidationError('Возраст вне диапазона')
 
 
 AlphanumericValidator = RegexValidator(
@@ -36,7 +41,7 @@ EmailSymbolsValidator = RegexValidator(
      'и символом нижнего подчеркивания'))
 
 
-NameSymbolsValidator = RegexValidator(r"^[^- ][а-яА-ЯёЁ\s-]+[^- ]$",
+NameSymbolsValidator = RegexValidator(r"^[а-яА-ЯёЁ]+(?:[- ]?[а-яА-ЯёЁ]+)*$",
                                       ('Разрешены только буквы русского '
                                        'алфавита, дефис, и символ пробела. '
                                        'Дефисы и пробелы не могут находиться '
@@ -47,7 +52,7 @@ NameSpacesValidator = RegexValidator(r"^(?!.*\s{2})(?!.*\-{2})",
 
 
 PasswordContentValidator = RegexValidator(
-    r"[A-Za-z\d@$!%*#?&-]{8,20}$",
+    r"^[A-Za-z\d@$!%*#?&-]{8,20}$",
     ('Пароль должен содержать не менее восьми и не более двадцати символов, '
      'разрешены буквы латинского алфавита, специальные символы '
      'без ограничений, а так же цифры. Регистр букв имеет значение'))

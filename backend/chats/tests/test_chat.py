@@ -103,7 +103,7 @@ def test_chats_list_data(psy_client, psy_user, customer_user, chat, message):
                 'id': message.id,
                 'text': message.text,
                 'date_time': message.date_time.strftime(DATETIMEFORMAT),
-                'is_author_me': False,
+                'is_author_me': True,
                 'author': customer_user.id,
             }, ]
         }
@@ -140,7 +140,7 @@ def test_chat_retrieve_data(
             'id': message.id,
             'text': message.text,
             'date_time': message.date_time.strftime(DATETIMEFORMAT),
-            'is_author_me': False,
+            'is_author_me': True,
             'author': customer_user.id,
         }, ]
     }

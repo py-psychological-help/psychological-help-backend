@@ -20,7 +20,6 @@ services:
     image: redis/redis-stack-server:latest
     ports:
       - 6379:6379
-      - 8001:8001
     volumes:
       - redis_data:/local-data/
   backend:
