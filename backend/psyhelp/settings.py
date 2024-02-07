@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'core.apps.CoreConfig',
     'channels',
+    'drf_api_logger',
 ]
 
 MIDDLEWARE = [
@@ -68,6 +69,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'drf_api_logger.middleware.api_logger_middleware.APILoggerMiddleware',
 ]
 
 ROOT_URLCONF = 'psyhelp.urls'
@@ -95,7 +97,9 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('redis', 6379)],  # убрать в енв
+            "hosts": [
+                (os.getenv('CANNELS_REDIS_HOST'), os.getenv('CANNELS_REDIS_PORT'))
+            ],
         },
     },
 }
@@ -182,6 +186,7 @@ MEDIA_ROOT = '/media'  # в докере проще так
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER': 'core.exception_handler.custom_exception_handler',
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
@@ -189,7 +194,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 100
+    'PAGE_SIZE': 100,
 }
 PAGE_SIZE = 6
 
@@ -253,6 +258,12 @@ COMPRESS_IMAGE = True
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 CACHE_TTL = 1  # время хранение кеша в секундах
+
+LIMIT_MESSAGES = os.getenv('LIMIT_MESSAGES')
+
+DRF_API_LOGGER_DATABASE = True  # сохранение логов в бд
+DRF_API_LOGGER_STATUS_CODES = [500]  # список статусов которые будут логироваться
+
 
 # количество последних сообщений вложенных в чат
 LIMIT_MESSAGES = 2
