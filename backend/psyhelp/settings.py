@@ -97,7 +97,9 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],  # убрать в енв
+            "hosts": [
+                (os.getenv('CANNELS_REDIS_HOST'), os.getenv('CANNELS_REDIS_PORT'))
+            ],
         },
     },
 }
@@ -184,6 +186,7 @@ MEDIA_ROOT = '/media'  # в докере проще так
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER': 'core.exception_handler.custom_exception_handler',
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
@@ -191,7 +194,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 100
+    'PAGE_SIZE': 100,
 }
 PAGE_SIZE = 6
 
@@ -258,3 +261,4 @@ CACHE_TTL = 1  # время хранение кеша в секундах
 LIMIT_MESSAGES = os.getenv('LIMIT_MESSAGES')
 
 DRF_API_LOGGER_DATABASE = True  # сохранение логов в бд
+DRF_API_LOGGER_STATUS_CODES = [500]  # список статусов которые будут логироваться
