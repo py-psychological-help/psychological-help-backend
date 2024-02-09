@@ -11,6 +11,8 @@ from .validators import (AlphanumericValidator,
                          EmailSymbolsValidator,
                          NameSpacesValidator,
                          NameSymbolsValidator,
+                         PasswordContentValidator,
+                         PasswordGroupsValidator,
                          year_validator)
 
 
@@ -132,7 +134,11 @@ class CustomClientUser(AbstractBaseUser):
     """Модель клиентов."""
 
     prefix = 'c'
-    password = models.CharField('password', max_length=128, blank=True)
+    password = models.CharField('password', 
+                                max_length=128,
+                                blank=True,
+                                validators= [PasswordContentValidator,
+                                             PasswordGroupsValidator,])
 
     first_name = models.CharField(
         max_length=50,

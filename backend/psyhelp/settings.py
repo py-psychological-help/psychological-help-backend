@@ -3,6 +3,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 import redis
 
+from users.validators import PasswordContentValidator, PasswordGroupsValidator
+
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -207,6 +209,7 @@ DJOSER = {
     'HIDE_USERS': False,
     'PASSWORD_RESET_CONFIRM_URL': 'reset-confirmation/{uid}/{token}/',
     'PASSWORD_CHANGED_EMAIL_CONFIRMATION': 'True',
+    'PASSWORD_VALIDATORS': [PasswordContentValidator, PasswordGroupsValidator],
 }
 
 CORS_URLS_REGEX = r'^/api/.*$'
