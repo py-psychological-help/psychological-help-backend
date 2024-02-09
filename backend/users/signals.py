@@ -39,8 +39,8 @@ pre_save.connect(anonymize_data,
 
 @receiver(post_save, sender=CustomClientUser)
 def client_notification(sender, instance, created, **kwargs):
-    """Отправляет уведомление о успешной регистрации."""
-    if not instance.is_reg_confirm_sent:
+    """Отправляет уведомление о завершении регистрации."""
+    if instance.is_active and not instance.is_reg_confirm_sent:
         send_client_reg_confirm(instance)
         instance.is_reg_confirm_sent = True
         instance.save()
@@ -64,6 +64,8 @@ def psychologist_notification(sender, instance, created, **kwargs):
         instance.save()
 
     if not instance.is_reg_confirm_sent:
-        send_reg_confirm(instance)
         instance.is_reg_confirm_sent = True
         instance.save()
+
+    if instance.is_active:
+        send_reg_confirm(instance)

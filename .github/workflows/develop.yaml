@@ -52,6 +52,7 @@ jobs:
         CELERY_BROKER_URL: redis://localhost:6379
         CELERY_RESULT_BACKEND: redis://localhost:6379
       run: |
+        sudo cp backend/users/tests/flower.jpg /media/
         python backend/manage.py migrate
         python -m flake8 backend/
         pytest
