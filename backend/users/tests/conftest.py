@@ -91,9 +91,7 @@ def psy_auth_user(psy_user):
 
 @pytest.fixture()
 def psy_auth_moderator_user(psy_moderator):
-    """Фикстура `APIClient` с авторизованным пользователем (модератор.)
-
-    """
+    """Фикстура `APIClient` с авторизованным пользователем (модератор."""
     psy_client = APIClient()
     psy_client.force_authenticate(psy_moderator)
     return psy_client
