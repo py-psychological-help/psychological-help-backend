@@ -24,7 +24,7 @@ class CustomUserAdmin(UserAdmin):
                     'approved_by_moderator', 'role', 'birth_date')
     list_filter = ('email', 'approved_by_moderator')
     search_fields = ('email',)
-    ordering = ("email",)
+    ordering = ("pk",)
     fieldsets = (
         (
             None,

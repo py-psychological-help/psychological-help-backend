@@ -92,6 +92,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = 'Психолог'
         verbose_name_plural = 'Психологи'
+        ordering = ('pk',)
 
 
 class Document(models.Model):
