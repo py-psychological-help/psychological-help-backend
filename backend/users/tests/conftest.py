@@ -37,7 +37,7 @@ from django.core.files.base import ContentFile
 @pytest.fixture()
 def psy_user(db, django_user_model):
     """Фикстура одобренного модератором пользователя (психолога)."""
-    image_path = str(settings.BASE_DIR / 'users' / 'tests' / 'flower.jpg')
+    # image_path = str(settings.BASE_DIR / 'users' / 'tests' / 'flower.jpg')
     return django_user_model.objects.create_user(
         email='p@p.fake',
         password='passssssssss',
@@ -47,14 +47,14 @@ def psy_user(db, django_user_model):
         is_reg_confirm_sent=True,
         first_name='Ivan',
         last_name='Ivanov',
-        photo=image_path
+        # photo=image_path
     )
 
 
 @pytest.fixture()
 def psy_moderator(db, django_user_model):
     """Фикстура одобренного модератором пользователя (психолога)."""
-    image_path = str(settings.BASE_DIR / 'users' / 'tests' / 'flower.jpg')
+    # image_path = str(settings.BASE_DIR / 'users' / 'tests' / 'flower.jpg')
     return django_user_model.objects.create_user(
         email='p@p.fake',
         password='passssssssss',
@@ -64,7 +64,7 @@ def psy_moderator(db, django_user_model):
         is_reg_confirm_sent=True,
         first_name='Ivan',
         last_name='Ivanov',
-        photo=image_path
+        # photo=image_path
     )
 
 
