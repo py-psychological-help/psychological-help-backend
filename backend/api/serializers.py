@@ -13,8 +13,8 @@ from users.validators import (AlphanumericValidator,
                               EmailSymbolsValidator,
                               NameSpacesValidator,
                               NameSymbolsValidator,
-                              PasswordContentValidator,
-                              PasswordGroupsValidator,
+                              RegexContentValidator,
+                              RegexPasswordGroupsValidator,
                               birthday_validator)
 
 User = get_user_model()
@@ -117,8 +117,8 @@ class UserCreateSerializer(UserSerializer):
                                      max_length=20,
                                      write_only=True,
                                      trim_whitespace=False,
-                                     validators=[PasswordContentValidator,
-                                                 PasswordGroupsValidator, ])
+                                     validators=[RegexContentValidator,
+                                                 RegexPasswordGroupsValidator, ])
     birth_date = serializers.DateField(required=True,
                                        validators=[birthday_validator, ])
 

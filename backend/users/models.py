@@ -11,8 +11,6 @@ from .validators import (AlphanumericValidator,
                          EmailSymbolsValidator,
                          NameSpacesValidator,
                          NameSymbolsValidator,
-                         PasswordContentValidator,
-                         PasswordGroupsValidator,
                          year_validator)
 
 
@@ -42,6 +40,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         validators=[NameSpacesValidator,
                     NameSymbolsValidator, ]
     )
+    password = models.CharField('password', 
+                                max_length=128,
+                                blank=True,)
     patronymic = models.CharField(
         max_length=50,
         blank=True,
@@ -136,9 +137,7 @@ class CustomClientUser(AbstractBaseUser):
     prefix = 'c'
     password = models.CharField('password', 
                                 max_length=128,
-                                blank=True,
-                                validators= [PasswordContentValidator,
-                                             PasswordGroupsValidator,])
+                                blank=True,)
 
     first_name = models.CharField(
         max_length=50,

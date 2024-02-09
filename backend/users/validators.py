@@ -4,6 +4,7 @@ from datetime import date
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
+from django.utils.translation import ugettext as _
 
 
 def year_validator(value):
@@ -51,15 +52,46 @@ NameSpacesValidator = RegexValidator(r"^(?!.*\s{2})(?!.*\-{2})",
                                      'Двойные дефисы и пробелы запрещены')
 
 
-PasswordContentValidator = RegexValidator(
+RegexContentValidator = RegexValidator(
     r"^[A-Za-z\d@$!%*#?&-]{8,20}$",
     ('Пароль должен содержать не менее восьми и не более двадцати символов, '
      'разрешены буквы латинского алфавита, специальные символы '
      'без ограничений, а так же цифры. Регистр букв имеет значение'))
 
-
-PasswordGroupsValidator = RegexValidator(
+RegexPasswordGroupsValidator = RegexValidator(
     r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&-])",
     ('Пароль должен содержать как миним одну '
      'строчную букву, как минимум одну заглавную, '
      'как минимум одну цифру, и как минимуи один специальный символ'))
+
+
+class PasswordContentValidator(object):
+    def validate(self, password, user=None):
+        if not re.findall('^[A-Za-z\d@$!%*#?&-]{8,20}$', password):
+            raise ValidationError(
+                _('Пароль должен содержать не менее восьми и не более двадцати символов, '
+                  'разрешены буквы латинского алфавита, специальные символы '
+                  'без ограничений, а так же цифры. Регистр букв имеет значение'),
+                code='password_invalid_content',
+            )
+
+    def get_help_text(self):
+        return _('Пароль должен содержать не менее восьми и не более двадцати символов, '
+                 'разрешены буквы латинского алфавита, специальные символы '
+                 'без ограничений, а так же цифры. Регистр букв имеет значение')
+
+
+class PasswordGroupsValidator(object):
+    def validate(self, password, user=None):
+        if not re.findall('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&-])', password):
+            raise ValidationError(
+                _('Пароль должен содержать как миним одну '
+                  'строчную букву, как минимум одну заглавную, '
+                  'как минимум одну цифру, и как минимуи один специальный символ'),
+                code='password_not_all_symbol_groups',
+            )
+
+    def get_help_text(self):
+        return _('Пароль должен содержать как миним одну '
+                  'строчную букву, как минимум одну заглавную, '
+                  'как минимум одну цифру, и как минимуи один специальный символ')

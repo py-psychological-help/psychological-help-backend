@@ -2,7 +2,6 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 import redis
-
 from users.validators import PasswordContentValidator, PasswordGroupsValidator
 
 load_dotenv()
@@ -154,6 +153,12 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+    {
+        'NAME': 'users.validators.PasswordContentValidator',
+    },
+    {
+        'NAME': 'users.validators.PasswordGroupsValidator',
+    },
 ]
 
 
@@ -209,7 +214,6 @@ DJOSER = {
     'HIDE_USERS': False,
     'PASSWORD_RESET_CONFIRM_URL': 'reset-confirmation/{uid}/{token}/',
     'PASSWORD_CHANGED_EMAIL_CONFIRMATION': 'True',
-    'PASSWORD_VALIDATORS': [PasswordContentValidator, PasswordGroupsValidator],
 }
 
 CORS_URLS_REGEX = r'^/api/.*$'
