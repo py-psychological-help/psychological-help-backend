@@ -1,6 +1,6 @@
 import pytest
-from django.core.exceptions import FieldDoesNotExist
-from users.models import CustomClientUser, Document
+
+from users.models import CustomClientUser
 from rest_framework import status
 from django.contrib.auth import get_user_model
 

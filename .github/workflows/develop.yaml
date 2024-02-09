@@ -55,7 +55,7 @@ jobs:
         sudo cp backend/users/tests/flower.jpg /media/
         python backend/manage.py migrate
         python -m flake8 backend/
-        sudo pytest
+        pytest
 
   send_message:
     runs-on: ubuntu-latest
