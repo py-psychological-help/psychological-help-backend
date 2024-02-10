@@ -114,7 +114,7 @@ class ChatConsumer(GenericAsyncAPIConsumer):
     @database_sync_to_async
     def set_psy_in_chat(self):
         """Записываем психолга в чат"""
-        if self.user.approved_by_moderator:
+        if not self.chat.psychologist and self.user.approved_by_moderator:
             self.chat.psychologist = self.user
             self.chat.save()
 
