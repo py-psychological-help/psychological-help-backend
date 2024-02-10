@@ -22,7 +22,7 @@ from .serializers import (UserSerializer, ClientSerializer,
                           DocumentSerializer, ChatSerializer,
                           MessageSerializer)
 from .filters import ChatFilter
-from .permissions import ApprovedByModerator
+from .permissions import ApprovedByModerator, IsAnonymous
 
 
 User = get_user_model()
@@ -63,7 +63,7 @@ class CustomClientUserViewSet(viewsets.ModelViewSet):
     queryset = CustomClientUser.objects.all()
     serializer_class = ClientSerializer
     http_method_names = ['post']
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAnonymous,)
 
 
 class DocumentViewSet(viewsets.ModelViewSet):
