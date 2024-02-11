@@ -11,5 +11,7 @@ CustomUser = get_user_model()
 @receiver(post_save, sender=Chat)
 def sending_chat_to_client(sender, instance, created, **kwargs):
     """Отправляет ссылку клиенту."""
-    if instance.psychologist:
+    if instance.psychologist and not instance.is_url_sent:
         send_chat_url(instance)
+        instance.is_url_sent = True
+        instance.save()
