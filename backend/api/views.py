@@ -152,7 +152,7 @@ def activate_chat(request, chat_secret_key):
     """Привязывает психолога к чату и отправляет клиенту email."""
     chat_id = get_chat_id(chat_secret_key)
     chat = get_object_or_404(Chat, id=chat_id)
-    send_chat_url(chat)
+    # send_chat_url(chat)
     if chat.psychologist is None:
         chat.psychologist = request.user
         chat.save()
