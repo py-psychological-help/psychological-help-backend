@@ -54,7 +54,8 @@ def send_chat_url(chat):
     """Оправка клиенту ссылки на чат."""
     user = chat.client
     chat_secret_key = chat.chat_secret_key
-    chat_url = f'http://{settings.ALLOWED_HOSTS[-1]}/chats/{chat_secret_key}/'
+    chat_url = (f'http://{settings.ALLOWED_HOSTS[-1]}/'
+                f'client-side/{chat_secret_key}/')
     send_email_task.delay(
         'mail/chat_url.html',
         {'chat_url': chat_url},
