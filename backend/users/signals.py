@@ -63,9 +63,7 @@ def psychologist_notification(sender, instance, created, **kwargs):
         instance.is_approve_sent = True
         instance.save()
 
-    if not instance.is_reg_confirm_sent:
+    if not instance.is_reg_confirm_sent and instance.is_active:
+        send_reg_confirm(instance)
         instance.is_reg_confirm_sent = True
         instance.save()
-
-    if instance.is_active:
-        send_reg_confirm(instance)
