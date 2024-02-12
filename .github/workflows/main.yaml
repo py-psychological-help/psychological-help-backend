@@ -114,7 +114,7 @@ jobs:
         source: "docker-compose.production.yml"
         target: "psyhelp"
     - name: Executing remote ssh commands to deploy
-      uses: actions/checkout@v2
+      uses: appleboy/ssh-action@v.0.1.3
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
