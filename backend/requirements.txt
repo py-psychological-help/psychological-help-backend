@@ -74,6 +74,9 @@ pycparser==2.21
 PyJWT==2.8.0
 pyOpenSSL==24.0.0
 pyparsing==3.1.1
+pytest==6.2.5
+pytest-django==4.4.0
+pytest-pythonpath==0.7.3
 python-dateutil==2.8.2
 python-dotenv==1.0.0
 python3-openid==3.2.0
