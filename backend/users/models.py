@@ -1,9 +1,14 @@
+from PIL import Image
+from pathlib import Path
+from io import BytesIO
+
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.utils import timezone
-from PIL import Image
+from django.core.files import File
+
 
 from .managers import CustomUserManager
 from .validators import (AlphanumericValidator,
@@ -12,6 +17,16 @@ from .validators import (AlphanumericValidator,
                          NameSpacesValidator,
                          NameSymbolsValidator,
                          year_validator)
+
+
+image_types = {
+    "jpg": "JPEG",
+    "jpeg": "JPEG",
+    "png": "PNG",
+    "gif": "GIF",
+    "tif": "TIFF",
+    "tiff": "TIFF",
+}
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
@@ -53,7 +68,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         default='PSYCHOLOGIST'
     )
     photo = models.ImageField(
-        upload_to='photos/', blank=True
+        blank=True
     )
     email = models.EmailField('email адрес',
                               blank=False,
@@ -110,19 +125,36 @@ class Document(models.Model):
         blank=True
     )
 
-    scan = models.ImageField('Скан документа',
-                             upload_to='scans',
-                             blank=False)
+    scan = models.ImageField(blank=False)
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
-        """Сжимает загруженные сертификаты до нечитаемости."""
-        super().save()
-        if settings.COMPRESS_IMAGE:
-            with Image.open(self.scan.path) as image:
-                output_size = (60, 60)
-                image.thumbnail(output_size)
-                image.save(self.scan.path)
+    def image_resize(self, image, width, height):
+        img = Image.open(image)
+        # check if either the width or height is greater than the max
+        if (img.width > width or img.height > height
+                and settings.COMPRESS_IMAGE):
+            output_size = (width, height)
+            # Create a new resized “thumbnail” version of the image with Pillow
+            img.thumbnail(output_size)
+            # Find the file name of the image
+            img_filename = Path(image.file.name).name
+            # Spilt the filename on “.” to get the file extension only
+            img_suffix = Path(image.file.name).name.split(".")[-1]
+            # Use the file extension to determine the file type from the
+            # image_types dictionary
+            img_format = image_types[img_suffix]
+            # Save the resized image into the buffer, noting the correct file
+            # type
+            buffer = BytesIO()
+            img.save(buffer, format=img_format)
+            # Wrap the buffer in File object
+            file_object = File(buffer)
+            # Save the new resized file as usual, which will save to S3 using
+            # django-storages
+            image.save(img_filename, file_object)
+
+    def save(self, *args, **kwargs):
+        self.image_resize(self.scan, 60, 60)
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = 'Документ'
@@ -156,7 +188,7 @@ class CustomClientUser(AbstractBaseUser):
         validators=[NameSpacesValidator,
                     NameSymbolsValidator, ])
 
-    photo = models.ImageField(upload_to='photos/', blank=True)
+    photo = models.ImageField('Фото', blank=True)
     email = models.EmailField('email адрес',
                               blank=False,
                               unique=True,
