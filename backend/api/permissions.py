@@ -37,3 +37,15 @@ class IsModeratorOrAdmin(BasePermission):
                                        or user.is_staff)):
             return True
         return False
+
+
+class IsAnonymous(BasePermission):
+    """
+    Позволяет создавать пользователя (регистрироваться)
+    только не зарегистрированным пользоваетлям
+    """
+
+    def has_permission(self, request, view):
+        if view.action == 'create':
+            return request.user.is_anonymous
+        return True
