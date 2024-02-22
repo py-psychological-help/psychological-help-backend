@@ -204,6 +204,7 @@ DJOSER = {
     'LOGIN_FIELD': 'email',
     'PERMISSIONS': {
         'user': ['rest_framework.permissions.IsAuthenticated'],
+        'user_create': ['api.permissions.IsAnonymous'],
         'user_list': ['api.permissions.IsModeratorOrAdmin'], },
     'HIDE_USERS': False,
     'PASSWORD_RESET_CONFIRM_URL': 'reset-confirmation/{uid}/{token}/',
