@@ -196,7 +196,6 @@ class GeneralChatConsumer(GenericAsyncAPIConsumer):
         Подключаемся к чату
         если аноним - генерируем никнейм
         если психолог - используем его имя и фамилию
-        
         """
         self.room_name = GENERAL_CHAT
         self.room_group_name = f"chat_{self.room_name}"
@@ -207,7 +206,9 @@ class GeneralChatConsumer(GenericAsyncAPIConsumer):
         else:
             self.username = f'{self.user.last_name} {self.user.first_name}'
 
-        await self.channel_layer.group_add(self.room_group_name, self.channel_name)
+        await self.channel_layer.group_add(
+            self.room_group_name, self.channel_name
+        )
         await self.accept()
 
     async def disconnect(self, close_code):
@@ -247,7 +248,7 @@ class GeneralChatConsumer(GenericAsyncAPIConsumer):
         nikname_obj = Nikname(nikname=nikname)
         nikname_obj.save()
         return nikname
-    
+
     @database_sync_to_async
     def remove_nickname(self):
         """Удаление никнейма"""
