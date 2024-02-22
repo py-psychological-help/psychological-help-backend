@@ -36,7 +36,7 @@ def test_me_docs_status(request, test_client, expected, notification):
     assert response.status_code == expected
 
 
-# @pytest.mark.skip(reason="Пропуск, из-за пробл с созданием фикстуры на github")
+@pytest.mark.skip(reason="Пропуск, из-за пробл с созданием фикстуры на github")
 def test_auth_user_add_doc(psy_auth_user):
     url = '/api/v1/users/psychologists/me/documents/'
     docs_count = Document.objects.count()
@@ -47,7 +47,7 @@ def test_auth_user_add_doc(psy_auth_user):
     assert response.status_code == status.HTTP_201_CREATED
 
 
-# @pytest.mark.skip(reason="Пропуск, из-за пробл с созданием фикстуры на github")
+@pytest.mark.skip(reason="Пропуск, из-за пробл с созданием фикстуры на github")
 def test_auth_doc_delete(psy_auth_user):
     url = '/api/v1/users/psychologists/me/documents/'
     docs_count = Document.objects.count()
