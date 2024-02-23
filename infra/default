@@ -1,5 +1,6 @@
 server {
     server_name dpogovorim.ru;
+    client_max_body_size 10M;
 
     location / {
       proxy_set_header Host $http_host;
