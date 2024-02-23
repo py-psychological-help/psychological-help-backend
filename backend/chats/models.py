@@ -50,3 +50,7 @@ class Message(models.Model):
     class Meta:
         verbose_name = 'Сообщение'
         verbose_name_plural = 'Сообщения'
+
+
+class Nikname(models.Model):
+    nikname = models.CharField(max_length=55, unique=True)
