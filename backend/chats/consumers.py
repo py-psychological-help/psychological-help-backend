@@ -1,12 +1,18 @@
 import json
+import random
 
 from djangochannelsrestframework.generics import GenericAsyncAPIConsumer
 from channels.db import database_sync_to_async
+from nickname_generator import generate
 
-from .models import Chat, Message
+from .models import Chat, Message, Nikname
+
+
+GENERAL_CHAT = 'general'
 
 
 class ChatConsumer(GenericAsyncAPIConsumer):
+    """Чат one to one психолог - аноним"""
 
     async def connect(self):
         """
@@ -180,3 +186,70 @@ class ChatConsumer(GenericAsyncAPIConsumer):
     def chat_not_active(self):
         self.chat.active = False
         self.chat.save()
+
+
+class GeneralChatConsumer(GenericAsyncAPIConsumer):
+    """Чат many to many общий чат психологов и анонимов"""
+
+    async def connect(self):
+        """
+        Подключаемся к чату
+        если аноним - генерируем никнейм
+        если психолог - используем его имя и фамилию
+        """
+        self.room_name = GENERAL_CHAT
+        self.room_group_name = f"chat_{self.room_name}"
+        self.user = self.scope['user']
+
+        if self.user.is_anonymous:
+            self.username = await self.get_nikname()
+        else:
+            self.username = f'{self.user.last_name} {self.user.first_name}'
+
+        await self.channel_layer.group_add(
+            self.room_group_name, self.channel_name
+        )
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        if self.user.is_anonymous:
+            await self.remove_nickname()
+        await self.channel_layer.group_discard(
+            self.room_group_name, self.channel_name
+        )
+
+    async def receive(self, text_data):
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                "type": "chat.message",
+                "message": text_data,
+                "nikname": self.username,
+            }
+        )
+
+    async def chat_message(self, event):
+        await self.send(
+            text_data=json.dumps(
+                {
+                    "message": event["message"],
+                    "nickname": event["nikname"]
+                },
+                ensure_ascii=False
+            )
+        )
+
+    @database_sync_to_async
+    def get_nikname(self):
+        """Генирация уникального никнейма"""
+        nikname = generate()
+        if Nikname.objects.filter(nikname=nikname).exists():
+            self.get_nikname()
+        nikname_obj = Nikname(nikname=nikname)
+        nikname_obj.save()
+        return nikname
+
+    @database_sync_to_async
+    def remove_nickname(self):
+        """Удаление никнейма"""
+        Nikname.objects.filter(nikname=self.username).delete()
