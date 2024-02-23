@@ -250,7 +250,7 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
-COMPRESS_IMAGE = True
+COMPRESS_IMAGE = os.getenv('DEBUG') in ['TRUE', 'true', '1', 'yes']
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
