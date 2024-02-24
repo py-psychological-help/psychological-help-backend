@@ -35,9 +35,9 @@ ALLOWED_HOSTS = ['127.0.0.1',
                  os.getenv('PROD_DOMAIN_NAME'),  # прод всегда последний!
                  ]
 
-CSRF_TRUSTED_ORIGINS = [f"https://{os.getenv('TEST_DOMAIN_NAME'),}",
-                        f"https://{os.getenv('PROD_DOMAIN_NAME'),}"]
-
+CSRF_TRUSTED_ORIGINS = [f"https://{os.getenv('TEST_DOMAIN_NAME')}",
+                        f"https://{os.getenv('PROD_DOMAIN_NAME')}"]
+print(CSRF_TRUSTED_ORIGINS)
 # Application definition
 
 INSTALLED_APPS = [
