@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'djoser',
-    'rest_framework_simplejwt',
     'rest_framework.authtoken',
     'corsheaders',
     'mail_templated',
@@ -165,8 +164,6 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_L10N = True
-
 USE_TZ = True
 
 
@@ -250,7 +247,7 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
-COMPRESS_IMAGE = os.getenv('DEBUG') in ['TRUE', 'true', '1', 'yes']
+COMPRESS_IMAGE = os.getenv('COMPRESS_IMAGE') in ['TRUE', 'true', '1', 'yes']
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
