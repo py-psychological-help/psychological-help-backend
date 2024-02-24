@@ -37,7 +37,7 @@ ALLOWED_HOSTS = ['127.0.0.1',
 
 CSRF_TRUSTED_ORIGINS = [f"https://{os.getenv('TEST_DOMAIN_NAME')}",
                         f"https://{os.getenv('PROD_DOMAIN_NAME')}"]
-print(CSRF_TRUSTED_ORIGINS)
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -224,7 +224,6 @@ if os.getenv('EMAIL_BACKEND') == 'SMTP':
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-print(EMAIL_BACKEND)
 EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
 SERVER_EMAIL = 'from@example.com'
 
