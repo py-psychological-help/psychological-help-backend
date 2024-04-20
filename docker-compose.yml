@@ -29,7 +29,7 @@ services:
       - db
       - redis
     volumes:
-      - static_volume:/backend_static/
+      - static_volume:/collected_static/
       - media_volume:/media/
       - data_volume:/data/
     ports:

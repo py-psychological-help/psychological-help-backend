@@ -34,7 +34,7 @@ services:
       - redis
     restart: always
     volumes:
-      - static_volume:/backend_static/
+      - static_volume:/collected_static/
       - media_volume:/media/
       - data_volume:/data/
   frontend:
